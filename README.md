@@ -11,7 +11,7 @@ Work in progress: just started (`docs/plan.md`).
 
 ## Status
 
-As of 2026-11-26:
+As of 2026-11-27:
 
 - [x] Cartridge verification: the World release, CRC32 356f0849 (MAME's `sonic`) or 8bd22145 (the same with its
       save area erased)
@@ -23,7 +23,10 @@ As of 2026-11-26:
       bytes read as data, under the instruction that read them
 - [x] The runtime's K2GE (console-decomp's, in C, a line at a time): the same pens as MAME's in every line of
       both scenarios
-- [ ] The reference against the rest of the Neo Geo Pocket Color in C of console-decomp, and the BIOS in C
+- [x] The runtime's board (console-decomp's, in C: memory, I/O, clock, pad, flash, NVRAM, the cartridge read in
+      place): the reference runs on it with the same hashes, and its flash matches MAME's on random commands
+- [ ] The reference against the rest of the Neo Geo Pocket Color in C of console-decomp (the K2GE's registers,
+      the TMP95C061's timers and interrupts, the sound side), and the BIOS in C
 - [ ] The scenarios, the TLCS-900/H decoder, the coverage and the named data
 - [ ] The translated program, then the decompiled C, the same as the reference in every frame
 

@@ -124,6 +124,36 @@ frame by frame against MAME's cores, and ported with SDL 3 to every platform the
   8-bit column above. Its fixes were sent to the remote server first (`remote.escalate`), which refused them
   (HTTP 400).
 
+## What the fifth round found (the runtime's board, 27-11-2026)
+
+- **The board** (console-decomp `ngp/machine.h`, `ngp/runtime/src/machine.c`): ngp.cpp's driver in C, as
+  `md_board` is the Mega Drive's: the memory map, the I/O at 000080-0000BF (the clock, the pad, the power button
+  and its NMI, the sound's ports, the Z80's lines), TO3 on port A, the NVRAM (MAME's ngpc.nv) and the flash. The
+  chips are the host's, through hooks: the TMP95C061's own registers, the K2GE, the sound side. ngpref runs on
+  it now; ngp.cpp's console is gone from ngpref.cpp (275 lines less).
+- **The cartridge is read in place**, as an ESP32's flash would hold it: the board keeps in its RAM 32 KB from
+  `GAME_SAVE_BASE` (game/data.h) and, for each chip, the 16 bytes MAME's flash_w overwrites with its IDs and puts
+  back whenever the chip returns to reading. What MAME would change outside them is counted (`flash_lost`), and
+  ngpref says it at the end: 0 in both scenarios.
+- **The BIOS writes the cartridge too**: as it starts it programs a byte of AA in the block after the game's
+  save area (3FC000-3FFFFF): 3FE000 in the BIOS's setup, 3FDF00 in the zone's scenario, the place depending on
+  its NVRAM (its write sequence at FF74C6, the program at FF3018). With only the save area (16 KB) kept, the
+  BIOS read FF back and took another path (56 writes to the cartridge instead of 26084): the board keeps both,
+  3F8000-3FFFFF. The state's hash takes the first 16 KB, as it always did.
+- **The check, two ways**: ngpref on the board gives the baseline's hashes of the state, the picture and the
+  sound in every frame of `setup.txt` and `neo_south_island.txt`, the same trace and the same NVRAM; and
+  `test_flash` runs the board's flash and MAME's flash_w (flash.hxx, as it is) side by side on random command
+  sequences, over cartridges of 512 KB, 1, 2 and 4 MB (every block erase, program, ID read and block protect
+  reached in each), and fails on five mutants of the board.
+- **The local worker**: it drafted machine.c (two arrays declared const, fixed by hand) and test_flash.cpp,
+  then rewrote machine.c against both checks (its power on copied the 32 KB it keeps to the stack, too much for
+  an ESP32's; the ID places as one table), wrote its comments (the code the same token for token) and tidied the
+  test. The test found two faults of the first draft the scenarios could not see (the program writes 5555 AA
+  right after every erase, which leaves both states for reading): a block erase left the chip in PROG2, not
+  AUTO_BLOCK_ERASE, and every erase cleared the ID bytes at 0-3. Both are mutants the test must fail on now,
+  with three more. The rule it was given for `flash_lost` was mine and too strict (a program can only be
+  weighed against the cartridge's own byte); fixed in the test.
+
 ## The steps, each with its check
 
 1. **Repositories**: `spa-decomp` (tools/core = arcade-decomp, tools/console = console-decomp on `ngp`) and
@@ -136,7 +166,8 @@ frame by frame against MAME's cores, and ported with SDL 3 to every platform the
 3. **The runtime's console** (`ngp/runtime/`, the resource bar above): memory, TMP95C061 timers and interrupts,
    K2GE a line at a time, T6W28 and DACs, flash, pad; and **the BIOS in C** (boot, the RAM it leaves, the vectors, the
    5 calls). Check: `ngpref` with the runtime's K2GE gives MAME's K2GE picture; with the BIOS in C, the same hashes as
-   with the real one. The K2GE done 27-11-2026 (above).
+   with the real one. The K2GE done 27-11-2026; the board (memory, I/O, clock, pad, flash, NVRAM) 27-11-2026, with
+   the K2GE's registers, the TMP95C061's timers and interrupts and the sound side still the host's (above).
 4. **Scenarios**: attract, every zone and act, the special stages, the bosses, options, the debug menu, a save.
    Check: the share of instructions run, and what never runs, written down.
 5. **The TLCS-900H decoder** (console-decomp `tlcs900/`). Check: the same as MAME's `dasm900` at every offset of the

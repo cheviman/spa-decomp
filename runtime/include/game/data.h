@@ -4,7 +4,7 @@
  *                 run the original code
  *    Version:     0.1.0
  *    Created:     26-11-2026
- *    Modified:    26-11-2026
+ *    Modified:    27-11-2026
  *    Author:      Sebastian Toyos
  *
  *    license:BSD-3-Clause
@@ -23,6 +23,9 @@ extern "C" {
 #define GAME_PROGRAM_SIZE   0x200000     /* the cartridge: 16 Mbit of flash at 200000, the TLCS-900/H's program,
                                             its data, the Z80's sound driver and the save area (3F8000-3FBFFF) */
 #define GAME_BIOS_SIZE      0x10000      /* the Neo Geo Pocket Color's BIOS at FF0000 (the reference only) */
+#define GAME_SAVE_BASE      0x1F8000     /* in the cartridge's space: the save area (3F8000-3FBFFF) and the
+                                            block after it the BIOS programs (3FC000-3FFFFF), the 32 KB of
+                                            flash the console's board keeps in RAM (ngp/machine.h) */
 
 extern uint8_t game_program[GAME_PROGRAM_SIZE];
 extern uint8_t game_bios[GAME_BIOS_SIZE];
