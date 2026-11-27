@@ -264,6 +264,39 @@ frame by frame against MAME's cores, and ported with SDL 3 to every platform the
   (the reset's prescaler at 1). Claude Code stopped one of its batches when the computer ran short of memory
   (llama-server holds 25 GB).
 
+## What the ninth round found (the runtime's mix, 27-11-2026)
+
+- **MAME's DACs**: ngp.cpp's two DACs are DAC_8BIT_R2R (dac.cpp, now in console-decomp `ngp/reference/mame`,
+  MAME 0.289's as it is). With nothing routed into them a byte gives -1 + byte / 128: 80 is the middle and 00
+  the bottom, and both start at 00. ngpsound took a byte as byte / 255 (0 to 1), which put an offset on every
+  value it wrote out. The speaker sums 0.50 of each T6W28 output (value / 32768) and 0.25 of its side's DAC;
+  in MAME's floats that sum is exact. dac.cpp builds unchanged on arcade-decomp's sound stand-in with four
+  members of MAME's sound_stream more (fill, get, input_count, and the device's requested inputs, none here).
+- **The mix** (console-decomp `ngp/mix.h`, `src/mix.c`): a run of the T6W28's samples with the DACs' bytes,
+  t6w28 / 2 + (byte - 128) * 64 a side with 1.0 as 32768, the half of an odd value dropped: -8192 to 24511, no
+  clamp, integers only. A host cuts its runs at a DAC's write, as ngpsound already did. ngpsound now mixes with
+  MAME's DACs (the WAV is MAME's sum), and the runtime's mix runs beside it, every value compared.
+- **What the game does with them**: only the SEGA voice. FadeToTitle calls WAVE_OUT (at 23AFAB) with timer 2
+  (T23MOD, TREG2 6), whose interrupt writes each byte to both DACs with one word write (mono), 8080 as its rest.
+  So timer 2 is used too, not only 0 and 1. The disassembly calls A2 `DAC_Left`, but ngp.cpp writes 0x22 to its
+  right DAC; for this game it is the same byte. Until the voice the DACs are at 00, and MAME's sum carries
+  -0.25 (-8192) on both sides, then 0 from the voice on: a step of the output's level the port will hear as a
+  click unless it takes the constant out (step 8 decides).
+- **The check, two ways**: `test_mix` runs MAME's DACs with ngp.cpp's gains against the runtime's mix on every
+  T6W28 value with every byte on both sides (256 runs of 32768 samples) and on 20000 random runs (half in place,
+  a guard past each): 99266738 values, the same; it fails on 9 wrong mixes (byte / 255, no middle, the middle at
+  7F, the odd half rounded up, the T6W28 at a gain of 1, the two top values held, the DACs or the sides
+  crossed, the last sample left out). And in `ngpref` the runtime's mix of the runtime's T6W28 samples gives
+  MAME's sum in every value of `setup.txt` and `neo_south_island.txt`, and the hashes, the trace and the NVRAM
+  are the same as before (they never took the mix). With a mix one off only for the bytes other than 00 and
+  80, the zone gives 591068 values unlike: 295534 samples, the voice's 1.54 seconds.
+- **The local worker**: it drafted `test_mix` against a check that built it on the right mix and on the nine
+  wrong ones. Its first try left out `<cstdarg>`, which the stand-in needs, and so did its first fix. The
+  second fix built, but its in-place runs took MAME's sums from the buffer the mix had just written over. Sent
+  back with that fault, it fixed it at the first try. By hand: the DACs built as ngpsound builds them (its
+  draft zeroed their memory, which dac.cpp does not need and which would hide a member left unset), the
+  constructor's arguments, and the cases counted in its last line.
+
 ## The steps, each with its check
 
 1. **Repositories**: `spa-decomp` (tools/core = arcade-decomp, tools/console = console-decomp on `ngp`) and
@@ -279,7 +312,7 @@ frame by frame against MAME's cores, and ported with SDL 3 to every platform the
    with the real one. The K2GE done 27-11-2026; the board (memory, I/O, clock, pad, flash, NVRAM) 27-11-2026; the
    T6W28 27-11-2026; the K2GE's registers and lines' timing 27-11-2026 (beside MAME's: the chip's memory is
    still MAME's for the CPU); the TMP95C061's devices (timers, interrupts, micro DMA, A/D) 27-11-2026 (beside
-   MAME's: the core is MAME's); the mix still the host's (above).
+   MAME's: the core is MAME's); the DACs and the mix 27-11-2026.
 4. **Scenarios**: attract, every zone and act, the special stages, the bosses, options, the debug menu, a save.
    Check: the share of instructions run, and what never runs, written down.
 5. **The TLCS-900H decoder** (console-decomp `tlcs900/`). Check: the same as MAME's `dasm900` at every offset of the
