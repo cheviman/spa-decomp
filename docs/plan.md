@@ -73,23 +73,26 @@ frame by frame against MAME's cores, and ported with SDL 3 to every platform the
   state, the picture and the sound in every frame.
 - **The game writes its flash at once**: 26084 writes of the cartridge's space while it starts (its own command
   sequences at 3F21xx: the save area set up).
+- **The sound side and two things of MAME's**: `ngpsound.cpp` (a draft of the local worker, finished by hand)
+  passes the 26 checks of its test (`test_ngpsound.cpp`, beside it). MAME's T6W28 takes its tones' frequencies
+  from port 1 only (the Z80's 4001) and port 0 gives the right side's volumes, and MAME's io_w writes both of the
+  TMP95C061's ports (0000A0, 0000A1) to port 0: the TMP95C061 alone can only change those volumes. And
+  t6w28.cpp's device_start leaves port 1's registers as the memory had them, so a second run started where the
+  first one's chip had been played on with its leftovers: the chips are now built in zeroed memory.
 - **Left for the next round**: `--jumps` and `--rom-reads` (the core reads its instructions through RDMEM, as
-  its data: its RDOP must mark them, a change to MAME's tlcs900.cpp to say in its header); the sound side
-  (`ngpsound.cpp`, a draft of the local worker) passes 21 of the 26 checks of its test (`test_ngpsound.cpp`,
-  beside it), and the five that fail (two
-  runs' hashes, the TMP95C061's writes to the T6W28, the DACs) are being fixed; the scheduling differs from
-  MAME's in one place, said in ngpref.cpp's header: the Z80 is brought up to the present before every write of
-  the TMP95C061 to the sound side, not only before a change of its lines.
+  its data: its RDOP must mark them, a change to MAME's tlcs900.cpp to say in its header); the scheduling
+  differs from MAME's in one place, said in ngpref.cpp's header: the Z80 is brought up to the present before
+  every write of the TMP95C061 to the sound side, not only before a change of its lines.
 
 ## The steps, each with its check
 
 1. **Repositories**: `spa-decomp` (tools/core = arcade-decomp, tools/console = console-decomp on `ngp`) and
-   `spa-port`, as TMNT. Check: the submodules at their commits, `rom/` ignored. Done 26-11-2026 for spa-decomp (no commit yet).
+   `spa-port`, as TMNT. Check: the submodules at their commits, `rom/` ignored. Done 26-11-2026 for spa-decomp.
 2. **`ngpref`** (console-decomp `ngp/reference/`): MAME's TMP95C061 core, MAME's Z80 and T6W28, and MAME's K2GE
    adapted to run without MAME's device framework, against the runtime's console; the real BIOS. Check: from a
    controls script it boots the BIOS, the SEGA screen, the title and a zone; BMP frames and hashes per frame (state,
-   picture, sound); `--trace`, `--jumps`, `--rom-reads`. Done 26-11-2026 but for `--jumps`, `--rom-reads` and the
-   sound side's last five checks (above); the console is ngp.cpp's in `ngpref.cpp` until the runtime's (step 3).
+   picture, sound); `--trace`, `--jumps`, `--rom-reads`. Done 26-11-2026 but for `--jumps` and `--rom-reads` (above);
+   the console is ngp.cpp's in `ngpref.cpp` until the runtime's (step 3).
 3. **The runtime's console** (`ngp/runtime/`, the resource bar above): memory, TMP95C061 timers and interrupts,
    K2GE a line at a time, T6W28 and DACs, flash, pad; and **the BIOS in C** (boot, the RAM it leaves, the vectors, the
    5 calls). Check: `ngpref` with the runtime's K2GE gives MAME's K2GE picture; with the BIOS in C, the same hashes as
