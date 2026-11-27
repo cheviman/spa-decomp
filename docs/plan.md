@@ -362,6 +362,56 @@ frame by frame against MAME's cores, and ported with SDL 3 to every platform the
   to think first and give only conclusions, it found one: with no hand-over the file compared the power-on copies
   with zeros (now it says `handover none` and stops there).
 
+## What the eleventh round found (the BIOS's boot in C, 27-11-2026)
+
+- **`ngp_bios_boot`** (console-decomp `ngp/bios.h`, `src/bios.c`): the writes that leave the console as the BIOS
+  leaves it for the cartridge, through the host's write (the board's `ngp_write8` in a game), and the CPU's
+  registers. The TMP95C061's registers (58 on the first boot, 38 at the restart), the I/O (B2-BC, and 090-09B on
+  the first boot), the K2GE (450 or 456 writes: the window, the scrolls, the mono palettes at 8100-8118, the colour
+  palettes at 8200-837F cleared but their colour 0, 8380-83FF's grey ramp eight times, the LED, the colour mode
+  behind its lock at 87F0), 32 of the BIOS's variables in the work RAM, the cartridge's entry it keeps at 6C00 and
+  the 18 RAM vectors at 6FB8, all FF23DF (a RETI). The host gives the frames since the last battery reading (6C18),
+  the language (6F87) and, on the first boot, the date's bytes at 091-097.
+- **Two paths, as MAME starts the BIOS**: from its reset vector when the NVRAM was not loaded, and at FF1800 when it
+  was (ngp.cpp's machine_reset). The first sets 40 registers the restart does not: the ports (001-01F, 02C-02F), the
+  clock (090-09B), the T6W28's A0 and A1, and the K2GE's 810D-810F and 8115-8117; at the restart they are as the
+  reset or the NVRAM left them. Every register both paths write has the same last value in both.
+- **What it leaves out**: the BIOS's writes to the sound side's ports (A0 and A1, FF on the first boot, and BA, the
+  Z80's NMI), whose effect is the sound chips' state, not a byte the program reads; and the bytes the BIOS changed
+  that the program never reads before writing them (1553 of the RAM and 3279 of the K2GE in the zone, 1832 and 4271
+  in the setup: its logo, its stack, its own variables). **B8 and B9 at AA are the sound chip off and the Z80
+  stopped** (ngp.cpp: 55 on, AA off; hardware.md said "on", now fixed); 0BC is FC, the byte the BIOS's Z80 driver
+  answered after the BIOS's last write there (03).
+- **`ngpref --boot FILE`** (boot.hxx): at the hand-over, the boot in C runs with what the host gives taken from the
+  BIOS's run, and its writes are put in place of what the BIOS left: the work RAM and the I/O from their power-on
+  copies, the K2GE's 16 KB from its reset (`ngp_k2ge_reset`; its status at 010, the chip's timing, kept; MAME's
+  memory replaced with `nv_load`, no write's side effects). The CPU's registers and the TMP95C061's own registers
+  (its chip keeps running) are compared instead, with the hand-over's and with the BIOS's last writes; the time, the
+  Z80 and the sound chips are kept. The file has an `unlike` line for each difference, and at the end of the run one
+  for each byte the program read before writing that the BIOS had set and the boot did not write.
+  **`--bus-hashes FILE`**: a hash a frame of every byte the TMP95C061 fetches, reads or writes, with its address.
+- **The check**: `unlike 0` in both scenarios, and the pictures, the sound, the program's bus and the trace the same
+  as without `--boot` in every frame of both. The state hashes differ from the hand-over on (frames 455-3000 of the
+  zone), and so does the setup's NVRAM, for the bytes left out. Without `--boot` the hashes of the state, the picture
+  and the sound, the trace and the NVRAM are the same as round `handover`'s (`build/runs/r11/`). Four mutants fail:
+  6F83 left out (`unlike read`, and the bus from the hand-over, the sound and the picture later), the battery's
+  count one more (`unlike ram`, the bus), the background colour 81 (`unlike k2ge`; the picture is the same) and XIZ
+  one more (`unlike cpu`; the bus is the same): the comparison catches what the run does not show.
+- **What this check does not reach**: the sound chips' state at the hand-over (the T6W28's registers after the
+  BIOS's writes and its Z80 driver's, the Z80 stopped with that driver in its RAM) is kept, so a port must leave it
+  as the BIOS does, or show it does not matter: step 7 checks it, the sound the same from power on. The CPU's
+  registers are compared, not put in place: being the same, it is the same run.
+- **The local worker** drafted `bios.c` from the lists of `--handover`, a table of the RAM's variables (what the
+  BIOS's code does with each, which it had mapped from the 890 instructions the BIOS runs after the hand-over, and
+  Claude checked in that code) and the names' sources, against a check that builds ngpref and runs both scenarios
+  with `--boot` (it fails on the boot that writes nothing). Right at its second try. Its names were invented or
+  copied (TFFCFR, COMMState on B3-B5, "REF" on 87F4, "LED Frame" on 87F2, 87F0's lock the other way round, T4MOD
+  and T5MOD as the 8-bit timers and the serial channel, BEXCS as the A/D) and the RAM had no comments: sent back with
+  the list, with the same check: right at its third try, every write the same; the lock's wording and a few long
+  lines were fixed by hand.
+  Its review of `boot.hxx` found nothing. The server elsewhere refused both requests the spill sent it (HTTP 400,
+  invalid_request); the local worker answered them.
+
 ## The steps, each with its check
 
 1. **Repositories**: `spa-decomp` (tools/core = arcade-decomp, tools/console = console-decomp on `ngp`) and
@@ -381,7 +431,7 @@ frame by frame against MAME's cores, and ported with SDL 3 to every platform the
    (memory, I/O, clock, pad, flash, NVRAM) 27-11-2026; the T6W28 27-11-2026; the K2GE's registers and lines' timing
    27-11-2026 (beside MAME's: the chip's memory is still MAME's for the CPU); the TMP95C061's devices (timers,
    interrupts, micro DMA, A/D) 27-11-2026 (beside MAME's: the core is MAME's); the DACs and the mix 27-11-2026;
-   what the program takes from the BIOS (`--handover`) 27-11-2026.
+   what the program takes from the BIOS (`--handover`) 27-11-2026; the BIOS's boot in C (`--boot`) 27-11-2026.
 4. **Scenarios**: attract, every zone and act, the special stages, the bosses, options, the debug menu, a save.
    Check: the share of instructions run, and what never runs, written down.
 5. **The TLCS-900H decoder** (console-decomp `tlcs900/`). Check: the same as MAME's `dasm900` at every offset of the
