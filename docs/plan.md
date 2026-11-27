@@ -187,6 +187,38 @@ frame by frame against MAME's cores, and ported with SDL 3 to every platform the
 - **Left for the sound**: the mix. MAME's DAC_8BIT_R2R (dac.cpp) is not in the repository; ngpsound takes a
   DAC's level as its byte / 255, an approximation, and mixes in floats. The DACs are the bytes the board passes.
 
+## What the seventh round found (the runtime's K2GE registers and timing, 27-11-2026)
+
+- **The registers and the lines** (console-decomp `ngp/k2ge.h`, `src/k2ge.c`): MAME's k2ge_device::write,
+  k1ge_device::read, timer_callback and device_reset on the chip's 16 KB in place. A frame is 199 lines of 515
+  dots; at the start of every line the chip sets (lines 152-198) or clears (line 0) the VBLANK status, bit 6 of
+  010, calls VBLANK (INT4) with 1 on lines 152-198 and with 0 on line 0 when 000 bit 7 is set, calls HBLANK (TI0)
+  with 1 on lines 0-150 and 198 when 000 bit 6 is set, and calls it with 0 at their dot 480 whether or not it
+  raised it. A write to 000 calls VBLANK too (bit 7 ? the status : 0). MAME calls a line with its state even
+  when it is at that state already; the runtime says each call, and the host passes it on as ngp.cpp does.
+- **What MAME's writes keep**: 100-117 keep 3 bits, the palettes' high bytes 4, 7E2 bit 7 and only while 7F0
+  is AA (else the write is lost, so the reset's write to 7E2 is); 030 is stored whole, since k1ge_device::write
+  keeps its bit 7 and k2ge_device::write then stores the byte again as it came. RAS.H (008) reads dot / 4, RAS.V
+  (009) the line.
+- **The check in ngpref**: the runtime's registers keep their own 16 KB, which every write of the CPU reaches
+  as it reaches MAME's; every read is compared, and at the end of every frame the memories and the calls of
+  both lines; the runtime's lines are now drawn from its own memory. In `setup.txt` and `neo_south_island.txt`
+  nothing differs, and the hashes, the trace and the NVRAM are the same as before. With HBLANK called on line 151
+  too, every frame's calls differ; with RAS.H as dot / 2 nothing does: neither the BIOS nor the game reads 008
+  in the scenarios, which the random test covers.
+- **The random test**: `test_k2ge_registers` drives MAME's K2GE and the runtime's with the same writes, reads
+  and times (200 cases, 800000 operations, 2960160 VBLANK and 27813005 HBLANK calls), comparing the memories,
+  the reads and both lines' calls after every operation; every register kind, both 7E2 cases, RAS.V on every
+  line and RAS.H at every value. It fails on 14 wrong parts (the masks of 030, 117, 118 and the palettes, 7E2's
+  lock, the VBLANK call of a write, HBLANK on line 151, the status, RAS.H, the reset, the HBLANK off, VBLANK
+  from line 151) and on one that keeps no mask and makes no call.
+- **The local worker**: it wrote the registers' functions against a check of the facts above (k1ge.cpp's
+  values, written down from its source), right at the third try. Its test compiled at the third; my check then
+  refused it wrongly (it built its wrong part on k2ge.c with the new functions already in it). Reviewed, the
+  test passed four of five wrong parts: it never wrote 117 or 118 nor any offset, read nothing above 0FF0, and
+  its lists' lengths were never compared; sent back with them and a check on those parts, it fixed most at the
+  first try, and the 100-118 offsets and the coverage of a line's own VBLANK calls by hand.
+
 ## The steps, each with its check
 
 1. **Repositories**: `spa-decomp` (tools/core = arcade-decomp, tools/console = console-decomp on `ngp`) and
@@ -200,8 +232,8 @@ frame by frame against MAME's cores, and ported with SDL 3 to every platform the
    K2GE a line at a time, T6W28 and DACs, flash, pad; and **the BIOS in C** (boot, the RAM it leaves, the vectors, the
    5 calls). Check: `ngpref` with the runtime's K2GE gives MAME's K2GE picture; with the BIOS in C, the same hashes as
    with the real one. The K2GE done 27-11-2026; the board (memory, I/O, clock, pad, flash, NVRAM) 27-11-2026; the
-   T6W28 27-11-2026; the K2GE's registers, the TMP95C061's timers and interrupts and the mix still the host's
-   (above).
+   T6W28 27-11-2026; the K2GE's registers and lines' timing 27-11-2026 (beside MAME's: the chip's memory is
+   still MAME's for the CPU); the TMP95C061's timers and interrupts and the mix still the host's (above).
 4. **Scenarios**: attract, every zone and act, the special stages, the bosses, options, the debug menu, a save.
    Check: the share of instructions run, and what never runs, written down.
 5. **The TLCS-900H decoder** (console-decomp `tlcs900/`). Check: the same as MAME's `dasm900` at every offset of the
