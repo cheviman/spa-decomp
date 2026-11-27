@@ -154,6 +154,39 @@ frame by frame against MAME's cores, and ported with SDL 3 to every platform the
   with three more. The rule it was given for `flash_lost` was mine and too strict (a program can only be
   weighed against the cartridge's own byte); fixed in the test.
 
+## What the sixth round found (the runtime's T6W28, 27-11-2026)
+
+- **The chip** (console-decomp `ngp/t6w28.h`, `ngp/runtime/src/t6w28.c`): MAME's t6w28.cpp in C, a struct the
+  host keeps (about 200 bytes), integers only; the volume table is set_gain(0)'s, 16 integers MAME computes in
+  doubles.
+- **What MAME's arithmetic keeps**: the sound is port 1's three tones and port 0's noise; port 0's tone 2 runs
+  only for the noise's "tone 2" rate, and port 0's tones 0 and 1 and port 1's noise are never run. Output 0 (the
+  left side) takes port 1's volumes, output 1 (the right side) port 0's. A voice that is off has its counter
+  moved on by the whole run of samples at once, so the samples depend on where the runs are cut: the runtime
+  makes a run as one of MAME's stream updates (ngpsound cuts them before every write, at a DAC's write and at
+  the end of a frame; set_enable does not update the stream in MAME, so it takes effect from the last cut). The
+  sums of products overflow MAME's int and wrap; the C takes them as unsigned 32-bit, the same bits. A run is
+  at most 16383 samples, past which a silent voice's 32-bit counter would overflow (a frame is 3203).
+- **The check, two ways**: `test_t6w28` runs MAME's chip and the runtime's on random writes, enables and runs
+  of samples (400 cases, 225959890 values, every noise mode and every volume on both ports, white and periodic
+  noise, the longest run, a run before the first enable), the same; it fails on 11 wrong chips (the volume
+  table, the silent voices' counters, the noise's mode, inversion, rate and reset, the outputs' volumes, the
+  enable and the reset's, the clamp). A twelfth, port 0's tone 2 not run, gives the same samples: only its
+  period is heard (the noise's "tone 2" rate), and it runs to keep the state MAME's. And in `ngpref` the
+  runtime's chip runs beside MAME's in the sound side, every value compared: in `setup.txt` (2600 frames) and
+  `neo_south_island.txt` (3000) none differs, and the state, picture and sound hashes, the trace and the NVRAM
+  are the same as before. With one entry of the volume table off by one, the zone gives 620354 values unlike.
+- **test_ngpsound** is built by CMake now (it was built by hand), and passes.
+- **The local worker**: it drafted t6w28.c right at the first try (my first compile check refused it: its
+  `| head` always succeeded), and rewrote it against an equivalence check (the draft and the rewrite on the
+  same random operations, the same samples and state); the wording by hand. Its first test built MAME's chip
+  on the stack, where the zeroed operator new never runs (port 1's registers and the noise modes are then the
+  stack's leftovers), and wrote the wrong registers in its setup; sent back with the faults, it fixed them but
+  took the latch bit for a register bit (`(data >> 4) & 0x0f`), so its noise coverage never held: that line, the
+  run before the first enable (the reset's mutant lived without it) and the wording by hand.
+- **Left for the sound**: the mix. MAME's DAC_8BIT_R2R (dac.cpp) is not in the repository; ngpsound takes a
+  DAC's level as its byte / 255, an approximation, and mixes in floats. The DACs are the bytes the board passes.
+
 ## The steps, each with its check
 
 1. **Repositories**: `spa-decomp` (tools/core = arcade-decomp, tools/console = console-decomp on `ngp`) and
@@ -166,8 +199,9 @@ frame by frame against MAME's cores, and ported with SDL 3 to every platform the
 3. **The runtime's console** (`ngp/runtime/`, the resource bar above): memory, TMP95C061 timers and interrupts,
    K2GE a line at a time, T6W28 and DACs, flash, pad; and **the BIOS in C** (boot, the RAM it leaves, the vectors, the
    5 calls). Check: `ngpref` with the runtime's K2GE gives MAME's K2GE picture; with the BIOS in C, the same hashes as
-   with the real one. The K2GE done 27-11-2026; the board (memory, I/O, clock, pad, flash, NVRAM) 27-11-2026, with
-   the K2GE's registers, the TMP95C061's timers and interrupts and the sound side still the host's (above).
+   with the real one. The K2GE done 27-11-2026; the board (memory, I/O, clock, pad, flash, NVRAM) 27-11-2026; the
+   T6W28 27-11-2026; the K2GE's registers, the TMP95C061's timers and interrupts and the mix still the host's
+   (above).
 4. **Scenarios**: attract, every zone and act, the special stages, the bosses, options, the debug menu, a save.
    Check: the share of instructions run, and what never runs, written down.
 5. **The TLCS-900H decoder** (console-decomp `tlcs900/`). Check: the same as MAME's `dasm900` at every offset of the
