@@ -219,6 +219,51 @@ frame by frame against MAME's cores, and ported with SDL 3 to every platform the
   its lists' lengths were never compared; sent back with them and a check on those parts, it fixed most at the
   first try, and the 100-118 offsets and the coverage of a line's own VBLANK calls by hand.
 
+## What the eighth round found (the runtime's TMP95C061 devices, 27-11-2026)
+
+- **The chip** (console-decomp `ngp/tmp95c061.h`, `ngp/runtime/src/tmp95c061.c`): MAME's tmp95c061.cpp
+  without the core, a struct the host keeps: the registers at 000000-00007F, the ports, the 8-bit timers and
+  their prescaler, the A/D, the input lines, the micro DMA (through the host's bus) and the choice of the
+  interrupt taken. What the core does is the host's (the pushes, the IFF, the vector, HALT, the EI and RETI
+  shadow); the choice is split in two (`pending`, then `acknowledge` after the pushes and the vector's read),
+  so that MAME's order is kept.
+- **What MAME's code keeps**: a timer's match raises its request but does not set m_check_irqs, so the
+  interrupt waits for something else to (HBLANK's TIO every line, a write of an interrupt register, EI...);
+  the prescaler keeps 24 bits after each run. At a priority the last source of MAME's table wins, priorities
+  0 and 7 are never taken, and the NMI leaves the SR's IFF. A micro DMA channel whose start vector's request
+  is set ends the scan even when its mode is none of MAME's 16 (it moves nothing, counts down and clears the
+  request); modes 0C and 10 read 16 bits to write 8. MAME raises 14 of the 22 maskable requests: not the
+  serial receptions, the 16-bit timers' (they are not run) nor INT6 and INT7 (no line), since a write keeps a
+  request bit or clears it, never sets it. 012's write is port 7's latch (MAME's map); ports 2 and 6 have no
+  read callback, port 9 no write one.
+- **MAME's constructors leave m_timer_8 unset** (and m_timer_pre until the reset): ngpref's TMP95C061 is now
+  static, built in zeroed memory, with the same hashes as before.
+- **The check, two ways**: `test_tmp95c061` drives MAME's chip and the runtime's with the same random writes,
+  reads, lines, runs (up to 300000 cycles), micro DMA and interrupt checks: 300 cases, 900000 operations
+  (16507 interrupts taken, 6591 NMIs, 2201 DMA moves, 8178 A/D ends, 2591 timers' requests, TO1 and TO3
+  changed 230 and 211 times), the same, the DMA's bus reads too; it fails on 30 wrong chips (the timers'
+  clocks, 16-bit modes and flip-flops, the prescaler, TRUN and TFFCR, port A's mask, the edges of TIO, INT4,
+  NMI, INT0's level, INT5's bit, the requests' writes, the choice's start, level and order, the
+  acknowledge, the A/D's time and ADREG, DMA mode 0C). And in `ngpref` the runtime's chip runs beside MAME's
+  (the same writes, lines and cycles; every read, interrupt, DMA check and step compared, the registers at
+  the end of every frame): in `setup.txt` (15438 interrupts) and `neo_south_island.txt` (16024) nothing
+  differs, no micro DMA moves, and the hashes, the trace and the NVRAM are the same as before; with an
+  interrupt's level one less, 6991 interrupt checks differ in 600 frames.
+- **The local worker**: it drafted the chip right at the first try against `facts.c` (what I read in
+  tmp95c061.cpp), and the random test then found four faults the facts did not reach, a line each, fixed by
+  hand: two writes out of their arrays (040-043's and 05C-05F's indices, which overwrote the pattern
+  generator), modes 0C-0E counting the destination down instead of the source, and a channel with an unknown
+  mode not ending the DMA's scan. Its test compiled at the third try; by hand, its runtime chip was built and
+  reset once for all cases, an interrupt pushed the new SR in place of the PC, a start vector was written as
+  an address, its coverage was counted out of its array, and every operation was as likely (a reset every
+  ten). Two of its 30 mutants were equivalent (0xffffff for 0x00ffffff, a loop run backwards), replaced by
+  hand; the test then let two through (T256: no long runs; mode 0C read as 8 bits: the bus's reads not
+  compared), now caught. Its ngpref block ran at the second round, with five faults fixed by hand: MAME's
+  line numbers taken as consecutive, two offsets, the DMA's replay erasing what it then compared, a text
+  written for every difference (the third round ran out of time), and in that third round a fact made up
+  (the reset's prescaler at 1). Claude Code stopped one of its batches when the computer ran short of memory
+  (llama-server holds 25 GB).
+
 ## The steps, each with its check
 
 1. **Repositories**: `spa-decomp` (tools/core = arcade-decomp, tools/console = console-decomp on `ngp`) and
@@ -233,7 +278,8 @@ frame by frame against MAME's cores, and ported with SDL 3 to every platform the
    5 calls). Check: `ngpref` with the runtime's K2GE gives MAME's K2GE picture; with the BIOS in C, the same hashes as
    with the real one. The K2GE done 27-11-2026; the board (memory, I/O, clock, pad, flash, NVRAM) 27-11-2026; the
    T6W28 27-11-2026; the K2GE's registers and lines' timing 27-11-2026 (beside MAME's: the chip's memory is
-   still MAME's for the CPU); the TMP95C061's timers and interrupts and the mix still the host's (above).
+   still MAME's for the CPU); the TMP95C061's devices (timers, interrupts, micro DMA, A/D) 27-11-2026 (beside
+   MAME's: the core is MAME's); the mix still the host's (above).
 4. **Scenarios**: attract, every zone and act, the special stages, the bosses, options, the debug menu, a save.
    Check: the share of instructions run, and what never runs, written down.
 5. **The TLCS-900H decoder** (console-decomp `tlcs900/`). Check: the same as MAME's `dasm900` at every offset of the

@@ -25,8 +25,10 @@ As of 2026-11-27:
       both scenarios
 - [x] The runtime's board (console-decomp's, in C: memory, I/O, clock, pad, flash, NVRAM, the cartridge read in
       place): the reference runs on it with the same hashes, and its flash matches MAME's on random commands
-- [ ] The reference against the rest of the Neo Geo Pocket Color in C of console-decomp (the K2GE's registers,
-      the TMP95C061's timers and interrupts, the sound side), and the BIOS in C
+- [x] The runtime's K2GE registers and timing, T6W28 and TMP95C061 devices (timers, interrupts, micro DMA,
+      A/D), each run beside MAME's in the reference with no difference in either scenario, and each against
+      MAME's on random operations
+- [ ] The sound's mix (MAME's DACs), and the BIOS in C
 - [ ] The scenarios, the TLCS-900/H decoder, the coverage and the named data
 - [ ] The translated program, then the decompiled C, the same as the reference in every frame
 
