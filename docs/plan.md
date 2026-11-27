@@ -15,6 +15,8 @@ frame by frame against MAME's cores, and ported with SDL 3 to every platform the
   2-bit format, video a line at a time, no threads and no stack switching, integers only.
 - **Nothing of the NGP in arcade-decomp**: the TLCS-900H frontend (`tlcs900/`) and the console (`ngp/`) go in
   console-decomp; arcade-decomp gives only the core without a CPU (the decompiler), as for Spinball.
+- **The BIOS** (27-11-2026): its boot in C in the runtime (step 3); its routines the program goes on using are
+  translated and decompiled with the game (steps 5-7), from the player's BIOS dump as the game from the cartridge.
 - **Game Gear: phase 2**, after the C and the port: a demake with the C as its specification, its ROM built by a tool
   from the player's NGPC ROM, never distributed.
 
@@ -297,6 +299,69 @@ frame by frame against MAME's cores, and ported with SDL 3 to every platform the
   draft zeroed their memory, which dac.cpp does not need and which would hide a member left unset), the
   constructor's arguments, and the cases counted in its last line.
 
+## What the tenth round found (what the program takes from the BIOS, 27-11-2026)
+
+- **The hand-over**: the BIOS starts the cartridge at its entry (the header's 20001C: 200040) in frame 455 of
+  `neo_south_island.txt` and 1850 of `setup.txt`. Its last steps (FF1F66-FF1C84): the K2GE's scroll planes and
+  colour palettes cleared, every RAM vector at 6FB8 set to FF23DF (a RETI) and the VBLANK's at 6FCC from its table
+  at FF23C3, the watchdog cleared, then `pushw (6C02); pushw (6C00); ldf 0; ret`: the entry it keeps at 6C00, in
+  bank 0. From there to SEGA (525) the screen is black: nothing of the logo is seen again.
+- **`ngpref --handover FILE`** (console-decomp `ngp/reference/handover.hxx`): from power on to the hand-over, the
+  BIOS's writes (which bytes, and each register's last value and count); from the hand-over to the end of the run,
+  the bytes the program reads before writing them (with their values at power on and at the hand-over, and whether
+  the BIOS set them or they are the NVRAM's), and the BIOS's code it enters, from where and why. The hashes, the
+  trace and the NVRAM are the same with and without it.
+- **What the program reads of what the BIOS left** (the zone's 3000 frames; `setup.txt` reads the same until the
+  power button):
+  - by the game's own code, 10 bytes: TRUN (020) 80, 025 FC and T23MOD (028) 00 as they read, `Z80Comm` (0BC) FC
+    (the BIOS's last write there was 03: FC is its Z80 driver's), 6C58 03 and 6C59 00 (`WRITE_FLASH_RAM`), 6C28 00,
+    and `NgpOSMode` (6F91) 10, which in the zone the BIOS does not write: it comes from the NVRAM, written at the
+    first setup;
+  - by the BIOS's routines the program goes on running: about 25 of its variables (6C16-6C26, 6C5F, 6D05, 6DA2,
+    6E80, 6F80-6F8A), the I/O 0B2 and 0B3, its table at FFFE00 (entries 1, 2, 15h, 16h), the vectors at FFFF00
+    (SWI 1, INT4, INT5, INTT2, INTAD) and the return address its SWI dispatcher pushes (FF279E-FF27A1);
+  - the console's, not the BIOS's: the clock (091-097, by VECT_RTCGET in frame 1407), the pad (0B0), the power
+    button (0B1), the A/D's result (060-061);
+  - none of the K2GE's 16 KB and none of the Z80's RAM, where the BIOS changed 3406 and 3470 bytes (the logo, its
+    sound driver), and none of the save area;
+  - 6 bytes at 6E62-6E75 "fetched", none executed: the core's prefetch past the last instructions of the game's
+    flash routines, which it copies to 6E00.
+  - One of them depends on how long the BIOS ran: 6C18-6C19, the frames since its last A/D (01BF in the zone, 000A
+    in the setup), which says when the next battery reading comes (frame 612 in the zone).
+- **The BIOS's code after the hand-over**: 177 instructions in the zone. The handlers of FFFF00's vectors: INT4
+  (VBLANK, FF2163: the pad, the power button, the A/D's count, the automatic power off, then the game's vector at
+  6FCC), INT5 (FF2282, the Z80's, to 6FD0), INTT2 (FF22B7, to 6FDC: the SEGA voice's timer 2, 12984 times; 35
+  times inside the VBLANK's handler, whose RETI returns there) and INTAD (FF2DCE). SWI 1 (FF2772) with VECT_CLOCKGEARSET
+  (W3=01) and VECT_RTCGET (FF1440); in the setup also VECT_SHUTDOWN (W3=00), then the BIOS's power off, which reads
+  4096 bytes of its own ROM (FF34B6). And the two calls of SYSTEM.LIB's `SYSTEM_CALL` through FFFE00 (FF2D27,
+  FF2D33), 2541 times each.
+- **The console as the BIOS sets it** (498 register writes before the hand-over): the memory controller (038-048),
+  the ports and the serial (051-05F), the timers (020-028), the A/D, the watchdog (WDCR 06F written 461 times) and
+  the interrupt levels (068-07B), the board's I/O (080, 0B2-0BC: AA at 0B8 and 0B9, the sound chip and the Z80
+  enabled), and the K2GE (8000 = C0, the window, the scrolls, the colour mode 87E2 = 00 behind its lock at 87F0,
+  the palettes cleared).
+- **The state hash never had the SR**: it asked MAME's core for TLCS900_SR, which is not one of its state entries
+  (tlcs900.cpp adds the SR as STATE_GENFLAGS), and got 0. Now it reads STATE_GENFLAGS: every frame's state hash
+  changes, the pictures, the sound, the trace and the NVRAM are the same as before, and the hashes are the same
+  run after run (`build/runs/handover/`).
+- **Decided** (proposed by Claude, confirmed by Sebas on 27-11-2026): the BIOS's routines the program reaches are
+  code the scenarios run, and like the game's they must keep its flags and its stack byte for byte. So they go
+  through steps 5 to 7 with the game (the translator reads them from the player's BIOS dump as it reads the game from the cartridge, and their C
+  is the decompiled C) instead of being written by hand in step 3. The BIOS in C of step 3 is its boot,
+  `ngp_bios_boot`: the writes that leave the console as the BIOS leaves it for the program (the lists above, named),
+  through the board's bus or a host's callback, with what depends on the moment (the A/D's count) and on the
+  settings (the language, the clock) given by the host.
+- **The local worker** drafted `handover.hxx` against a check that builds ngpref, runs 700 frames twice and tests
+  the file against what was known (the hand-over in 455, SWI 1 with W3=01, FFFE04 read, about 245 VBLANKs, the
+  registers the BIOS set). Its first draft compiled at the third try and missed the BIOS (its range ended at
+  100000), folded the 24-bit addresses on 3FFFFF, never looked at what had been written, and read the SR as
+  TLCS900_SR. Sent back with those, its first answer was right; two of its "failures" were the check's (a path
+  without `.exe`, the BIOS read at F279E). By hand: the I/O C0-FF read past its 64-byte copy, the save area's
+  values, the bitmaps' size, the addresses masked to 24 bits, and the BIOS's writes (set or kept, the registers).
+  Its review of the diff went through every line calling it a defect and then clearing it, until it was cut; asked
+  to think first and give only conclusions, it found one: with no hand-over the file compared the power-on copies
+  with zeros (now it says `handover none` and stops there).
+
 ## The steps, each with its check
 
 1. **Repositories**: `spa-decomp` (tools/core = arcade-decomp, tools/console = console-decomp on `ngp`) and
@@ -307,12 +372,16 @@ frame by frame against MAME's cores, and ported with SDL 3 to every platform the
    picture, sound); `--trace`, `--jumps`, `--rom-reads`. Done 26-11-2026, `--jumps` and `--rom-reads` 27-11-2026;
    the console is ngp.cpp's in `ngpref.cpp` until the runtime's (step 3).
 3. **The runtime's console** (`ngp/runtime/`, the resource bar above): memory, TMP95C061 timers and interrupts,
-   K2GE a line at a time, T6W28 and DACs, flash, pad; and **the BIOS in C** (boot, the RAM it leaves, the vectors, the
-   5 calls). Check: `ngpref` with the runtime's K2GE gives MAME's K2GE picture; with the BIOS in C, the same hashes as
-   with the real one. The K2GE done 27-11-2026; the board (memory, I/O, clock, pad, flash, NVRAM) 27-11-2026; the
-   T6W28 27-11-2026; the K2GE's registers and lines' timing 27-11-2026 (beside MAME's: the chip's memory is
-   still MAME's for the CPU); the TMP95C061's devices (timers, interrupts, micro DMA, A/D) 27-11-2026 (beside
-   MAME's: the core is MAME's); the DACs and the mix 27-11-2026.
+   K2GE a line at a time, T6W28 and DACs, flash, pad; and **the BIOS's boot in C** (the state it leaves for the
+   program, which `ngpref --handover` lists; its routines the program reaches go with the game, steps 5-7, as
+   decided in the tenth round). Check: `ngpref` with the runtime's K2GE gives MAME's K2GE picture; with the
+   boot in C put in place of the BIOS's at the hand-over (the RAM from power on, the K2GE's memory from its reset,
+   the CPU's registers; the time, the Z80 and the chips' counters kept), the same pictures, sound and program's bus
+   in every frame of both scenarios, and the registers it writes the BIOS's. The K2GE done 27-11-2026; the board
+   (memory, I/O, clock, pad, flash, NVRAM) 27-11-2026; the T6W28 27-11-2026; the K2GE's registers and lines' timing
+   27-11-2026 (beside MAME's: the chip's memory is still MAME's for the CPU); the TMP95C061's devices (timers,
+   interrupts, micro DMA, A/D) 27-11-2026 (beside MAME's: the core is MAME's); the DACs and the mix 27-11-2026;
+   what the program takes from the BIOS (`--handover`) 27-11-2026.
 4. **Scenarios**: attract, every zone and act, the special stages, the bosses, options, the debug menu, a save.
    Check: the share of instructions run, and what never runs, written down.
 5. **The TLCS-900H decoder** (console-decomp `tlcs900/`). Check: the same as MAME's `dasm900` at every offset of the

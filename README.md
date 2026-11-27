@@ -30,7 +30,9 @@ As of 2026-11-27:
       MAME's on random operations
 - [x] The sound's mix: MAME's DACs and the speaker's sum in integers, the same as MAME's in every value of
       both scenarios and on every T6W28 value with every DAC byte
-- [ ] The BIOS in C
+- [x] What the program takes from the BIOS (`ngpref --handover`): the bytes it reads of what the BIOS left at the
+      hand-over, the BIOS's routines it goes on using, and the registers the BIOS set
+- [ ] The BIOS's boot in C
 - [ ] The scenarios, the TLCS-900/H decoder, the coverage and the named data
 - [ ] The translated program, then the decompiled C, the same as the reference in every frame
 
