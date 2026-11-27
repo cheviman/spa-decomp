@@ -79,10 +79,29 @@ frame by frame against MAME's cores, and ported with SDL 3 to every platform the
   TMP95C061's ports (0000A0, 0000A1) to port 0: the TMP95C061 alone can only change those volumes. And
   t6w28.cpp's device_start leaves port 1's registers as the memory had them, so a second run started where the
   first one's chip had been played on with its leftovers: the chips are now built in zeroed memory.
-- **Left for the next round**: `--jumps` and `--rom-reads` (the core reads its instructions through RDMEM, as
-  its data: its RDOP must mark them, a change to MAME's tlcs900.cpp to say in its header); the scheduling
-  differs from MAME's in one place, said in ngpref.cpp's header: the Z80 is brought up to the present before
-  every write of the TMP95C061 to the sound side, not only before a change of its lines.
+- **The scheduling differs from MAME's in one place**, said in ngpref.cpp's header: the Z80 is brought up to
+  the present before every write of the TMP95C061 to the sound side, not only before a change of its lines.
+
+## What the third round found (`--jumps`, `--rom-reads`, 27-11-2026)
+
+- **MAME's core changed in one thing**: its RDOP sets `m_fetching` while it reads the instruction stream (the
+  4-byte prefetch included), since the core reads its instructions through RDMEM, as its data; said in
+  tlcs900.cpp's header. ngpref leaves those reads out, and its own (the disassembler's, the stack's).
+- **`--jumps`**: the JP and CALL whose memory operand is a register's (prefixes B0-BF, F3-F5), when taken. In
+  `neo_south_island.txt` (3000 frames), 134 pairs from 10 instructions: 23774B (`call T,XWA`, 100 targets),
+  23E50A (7), 39DCC5, 39DCDA, 39DF41, 3F1D58 (`call T,XIX` through the BIOS's table at FFFE00: FF2D27,
+  FF2D33), and in the BIOS FF1FB1, FF35F5, FF540C, FF5410. Every target was executed, and the log of frames
+  1640-1800 has all of the 1278 such jumps run there in the list, with their targets.
+- **An interrupt between a jump and its target**: the next instruction is then the handler's, and the target is
+  the PC the interrupt pushed (6 bytes: the PC, then the SR, tmp95c061.cpp's tlcs900_check_irqs). It happens 9
+  times in the scenario, all after 2000E7's `call NZ,XWA` not taken (VBLANK, FF22B7): the PC pushed is 2000E9,
+  the instruction after the handler's RETI in the log, and nothing is listed.
+- **`--rom-reads`**: 9729 ranges, 84256 bytes by instruction, read by 236 instructions (210 of the cartridge,
+  24 of the BIOS, 2 in RAM: 006E35 and 006E5A, the game's flash routines, reading the save area 3F8000-3FABFF).
+  None of those bytes was executed; two tables sit right after code: 39C705 (read by 39C6F7, after the RET at
+  39C6FC) and 39DF43 (read by 39DF3C, after 39DF41's JP).
+- **The check**: the state, picture and sound hashes and the trace are the same as before, with the options and
+  without them, and the lists are the same run after run.
 
 ## The steps, each with its check
 
@@ -91,7 +110,7 @@ frame by frame against MAME's cores, and ported with SDL 3 to every platform the
 2. **`ngpref`** (console-decomp `ngp/reference/`): MAME's TMP95C061 core, MAME's Z80 and T6W28, and MAME's K2GE
    adapted to run without MAME's device framework, against the runtime's console; the real BIOS. Check: from a
    controls script it boots the BIOS, the SEGA screen, the title and a zone; BMP frames and hashes per frame (state,
-   picture, sound); `--trace`, `--jumps`, `--rom-reads`. Done 26-11-2026 but for `--jumps` and `--rom-reads` (above);
+   picture, sound); `--trace`, `--jumps`, `--rom-reads`. Done 26-11-2026, `--jumps` and `--rom-reads` 27-11-2026;
    the console is ngp.cpp's in `ngpref.cpp` until the runtime's (step 3).
 3. **The runtime's console** (`ngp/runtime/`, the resource bar above): memory, TMP95C061 timers and interrupts,
    K2GE a line at a time, T6W28 and DACs, flash, pad; and **the BIOS in C** (boot, the RAM it leaves, the vectors, the

@@ -19,8 +19,9 @@ As of 2026-11-26:
 - [x] Reference: the original program and the console's BIOS on MAME's TMP95C061 (TLCS-900/H) core, with MAME's
       Z80, T6W28 and K2GE ([console-decomp](https://github.com/cheviman/console-decomp)'s `ngpref`), from the
       BIOS's first setup to the title and Neo South Island (`tests/controls/`)
-- [ ] `ngpref --jumps` and `--rom-reads`, and the reference against the Neo Geo Pocket Color in C of
-      console-decomp
+- [x] `ngpref --jumps` and `--rom-reads`: where each JP or CALL through a register went, and the cartridge's
+      bytes read as data, under the instruction that read them
+- [ ] The reference against the Neo Geo Pocket Color in C of console-decomp
 - [ ] The scenarios, the TLCS-900/H decoder, the coverage and the named data
 - [ ] The translated program, then the decompiled C, the same as the reference in every frame
 
