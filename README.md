@@ -21,7 +21,9 @@ As of 2026-11-26:
       BIOS's first setup to the title and Neo South Island (`tests/controls/`)
 - [x] `ngpref --jumps` and `--rom-reads`: where each JP or CALL through a register went, and the cartridge's
       bytes read as data, under the instruction that read them
-- [ ] The reference against the Neo Geo Pocket Color in C of console-decomp
+- [x] The runtime's K2GE (console-decomp's, in C, a line at a time): the same pens as MAME's in every line of
+      both scenarios
+- [ ] The reference against the rest of the Neo Geo Pocket Color in C of console-decomp, and the BIOS in C
 - [ ] The scenarios, the TLCS-900/H decoder, the coverage and the named data
 - [ ] The translated program, then the decompiled C, the same as the reference in every frame
 

@@ -103,6 +103,27 @@ frame by frame against MAME's cores, and ported with SDL 3 to every platform the
 - **The check**: the state, picture and sound hashes and the trace are the same as before, with the options and
   without them, and the lists are the same run after run.
 
+## What the fourth round found (the runtime's K2GE, 27-11-2026)
+
+- **What a line is**: MAME's K2GE draws pens, not colours: 0-191 the colour palettes' entries, 192-215 the
+  K1GE-compatible mode's (each through its register at 100-117), 216 the background, 217 the outside of the
+  window; the pens of 192 on become colours through the registers (012, 100-117, 118) as they are when the
+  picture is shown, at the end of the frame. The runtime's K2GE (console-decomp `ngp/runtime/src/k2ge.c`,
+  `ngp/k2ge.h`) draws the same pens, a byte each, from the chip's 16 KB read in place; the window is taken at
+  the start of line 0, and line N is drawn at the start of line N + 1.
+- **The check, two ways**: `test_k2ge` writes 28 dumps of the chip's memory (`ngpref --dump`: the BIOS's setup,
+  its logo, SEGA, the title, the menu and the zone) to MAME's K2GE and compares every line and every pixel's
+  colour, each dump also with its planes swapped, in the K1GE-compatible mode, with a small window and with its
+  sprites past column 255: 140 pictures, the same. And in `ngpref` the runtime's K2GE draws every line when
+  MAME's does: in `neo_south_island.txt` (3000 frames) and `setup.txt` (2599) no line differs, and the state,
+  picture and sound hashes are the same as before.
+- **What MAME's arithmetic keeps**: a sprite's column is 8 bits (`spr_x` is a u8), so one past column 255 shows
+  at the left edge; the first draft took it as an int, and only the moved sprites caught it.
+- **The local worker**: it drafted k2ge.c from the header and k1ge.cpp's ranges against the check; two slips
+  were fixed by hand (a missing `<stdbool.h>`, the K1GE mode's register index truncated to 8 bits), and the
+  8-bit column above. Its fixes were sent to the remote server first (`remote.escalate`), which refused them
+  (HTTP 400).
+
 ## The steps, each with its check
 
 1. **Repositories**: `spa-decomp` (tools/core = arcade-decomp, tools/console = console-decomp on `ngp`) and
@@ -115,7 +136,7 @@ frame by frame against MAME's cores, and ported with SDL 3 to every platform the
 3. **The runtime's console** (`ngp/runtime/`, the resource bar above): memory, TMP95C061 timers and interrupts,
    K2GE a line at a time, T6W28 and DACs, flash, pad; and **the BIOS in C** (boot, the RAM it leaves, the vectors, the
    5 calls). Check: `ngpref` with the runtime's K2GE gives MAME's K2GE picture; with the BIOS in C, the same hashes as
-   with the real one.
+   with the real one. The K2GE done 27-11-2026 (above).
 4. **Scenarios**: attract, every zone and act, the special stages, the bosses, options, the debug menu, a save.
    Check: the share of instructions run, and what never runs, written down.
 5. **The TLCS-900H decoder** (console-decomp `tlcs900/`). Check: the same as MAME's `dasm900` at every offset of the
