@@ -1,0 +1,10 @@
+# From a console set up and off (--nvram build/setup.nv, which tests/controls/setup.txt writes): the BIOS starts
+# again (FF1800) with the NEOGEO POCKET logo, SEGA (525), the game's intro and title (1125), PRESS "A" BUTTON
+# (1350); A at 1400 (the menu: START, GO TO ROOM), A at 1500 (START: Neo South Island, act 1, from 1640); the A
+# presses after it are jumps. The clock runs to 0:21 by 3000
+1400 press a
+1500 press a
+1600 press a
+1700 press a
+1800 press a
+2999 end

@@ -1,0 +1,25 @@
+# A console that has never been set up (no NVRAM): the BIOS fills its RAM and turns the console off (it waits in
+# HALT at FF1127 for the power button's NMI); the power button turns it on, and the BIOS's first setup takes
+# every default: English (450), YES (600), the colours for monochrome software (700, 800), the date and time,
+# Jan. 1, 1999 0:00 AM, field by field (900-1300), YES; SETTINGS FINISHED, the NEOGEO POCKET logo, SEGA, the
+# game's intro (from 2200). The power button turns it off at 2400: the BIOS keeps its settings in its RAM, which
+# --save-nvram writes after the run (MAME's ngpc.nv) for the scenarios that start from a console set up:
+#   ngpref --script tests/controls/setup.txt --save-nvram build/setup.nv
+20 press power
+450 press a
+600 press a
+700 press a
+800 press a
+900 press a
+1000 press a
+1100 press a
+1150 press a
+1200 press a
+1250 press a
+1300 press a
+1350 press a
+1400 press a
+1450 press a
+1500 press a
+2400 press power
+2599 end

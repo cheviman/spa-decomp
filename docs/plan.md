@@ -49,6 +49,38 @@ frame by frame against MAME's cores, and ported with SDL 3 to every platform the
 - **Sound**: its own Z80 driver, loaded into the Z80's RAM; Valley Bell's hand C port (`external/spa-disassembly/sound-driver/spa_drv.c`)
   gives the names. arcade-decomp's Z80 frontend decompiles it.
 
+## What the second round found (`ngpref`, 26-11-2026)
+
+- **MAME's sources build unchanged**: the TLCS-900/H core, the TMP95C061 and dasm900 on a stand-in for MAME's
+  emu.h (console-decomp `tlcs900/stub`: PAIR, the devcb callbacks, the TMP95C061's internal registers as an
+  address map the host reads its table from), the K2GE on another (`ngp/reference/video/stub`: timers the host
+  fires, the screen's beam from the host's present, MAME's indirect palette), the Z80 and the T6W28 on
+  arcade-decomp's sound stand-in (`konami/reference/sound/emu.h`). ngp.cpp's flash commands are copied as they
+  are (`flash.hxx`); the rest of the driver (the memory map, the I/O, the Z80's lines, the clock, the NVRAM) is
+  `ngpref.cpp`, and a review of it against ngp.cpp found no difference.
+- **A console never set up turns itself off**: with no NVRAM the BIOS fills its RAM, sets the clock to 1998 and
+  jumps to its power off (FF1074): a white screen, then HALT at FF1127 with the power button's NMI enabled (I/O
+  B3 bit 2). MAME's power_callback raises the NMI when the button is let go; then the BIOS asks for its first
+  setup (the language, the colours for monochrome software, the date and time: Jan. 1, 1999 0:00 AM).
+- **The NVRAM holds the settings only after a power off**: saved with the game running, the BIOS asks for its
+  setup again; saved after the power button turned the console off (the BIOS writes A5A5 at 6C7A and 4E50 at
+  6E95 on its way), the BIOS starts again at FF1800 (MAME's machine_reset with the NVRAM loaded) and goes
+  straight to its logo. `tests/controls/setup.txt` writes it (`--save-nvram build/setup.nv`); the scenarios
+  start from it.
+- **The path to the game**: the NEOGEO POCKET logo, SEGA (frame 525 from the NVRAM), the game's intro and title
+  (1125), PRESS "A" BUTTON (1350), the menu (START, GO TO ROOM), Neo South Island act 1 (1640):
+  `tests/controls/neo_south_island.txt`, 3000 frames in about 5 seconds. Two runs give the same hashes of the
+  state, the picture and the sound in every frame.
+- **The game writes its flash at once**: 26084 writes of the cartridge's space while it starts (its own command
+  sequences at 3F21xx: the save area set up).
+- **Left for the next round**: `--jumps` and `--rom-reads` (the core reads its instructions through RDMEM, as
+  its data: its RDOP must mark them, a change to MAME's tlcs900.cpp to say in its header); the sound side
+  (`ngpsound.cpp`, a draft of the local worker) passes 21 of the 26 checks of its test (`test_ngpsound.cpp`,
+  beside it), and the five that fail (two
+  runs' hashes, the TMP95C061's writes to the T6W28, the DACs) are being fixed; the scheduling differs from
+  MAME's in one place, said in ngpref.cpp's header: the Z80 is brought up to the present before every write of
+  the TMP95C061 to the sound side, not only before a change of its lines.
+
 ## The steps, each with its check
 
 1. **Repositories**: `spa-decomp` (tools/core = arcade-decomp, tools/console = console-decomp on `ngp`) and
@@ -56,7 +88,8 @@ frame by frame against MAME's cores, and ported with SDL 3 to every platform the
 2. **`ngpref`** (console-decomp `ngp/reference/`): MAME's TMP95C061 core, MAME's Z80 and T6W28, and MAME's K2GE
    adapted to run without MAME's device framework, against the runtime's console; the real BIOS. Check: from a
    controls script it boots the BIOS, the SEGA screen, the title and a zone; BMP frames and hashes per frame (state,
-   picture, sound); `--trace`, `--jumps`, `--rom-reads`.
+   picture, sound); `--trace`, `--jumps`, `--rom-reads`. Done 26-11-2026 but for `--jumps`, `--rom-reads` and the
+   sound side's last five checks (above); the console is ngp.cpp's in `ngpref.cpp` until the runtime's (step 3).
 3. **The runtime's console** (`ngp/runtime/`, the resource bar above): memory, TMP95C061 timers and interrupts,
    K2GE a line at a time, T6W28 and DACs, flash, pad; and **the BIOS in C** (boot, the RAM it leaves, the vectors, the
    5 calls). Check: `ngpref` with the runtime's K2GE gives MAME's K2GE picture; with the BIOS in C, the same hashes as

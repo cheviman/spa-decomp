@@ -16,8 +16,11 @@ As of 2026-11-26:
 - [x] Cartridge verification: the World release, CRC32 356f0849 (MAME's `sonic`) or 8bd22145 (the same with its
       save area erased)
 - [x] The disassembly's labels checked against the original: the same addresses (`docs/plan.md`)
-- [ ] Reference: the original program on MAME's TMP95C061 (TLCS-900/H) core, with MAME's Z80, T6W28 and K2GE,
-      against the Neo Geo Pocket Color in C of [console-decomp](https://github.com/cheviman/console-decomp) (`ngpref`)
+- [x] Reference: the original program and the console's BIOS on MAME's TMP95C061 (TLCS-900/H) core, with MAME's
+      Z80, T6W28 and K2GE ([console-decomp](https://github.com/cheviman/console-decomp)'s `ngpref`), from the
+      BIOS's first setup to the title and Neo South Island (`tests/controls/`)
+- [ ] `ngpref --jumps` and `--rom-reads`, and the reference against the Neo Geo Pocket Color in C of
+      console-decomp
 - [ ] The scenarios, the TLCS-900/H decoder, the coverage and the named data
 - [ ] The translated program, then the decompiled C, the same as the reference in every frame
 
@@ -26,8 +29,23 @@ As of 2026-11-26:
 - `tools/core/`: [arcade-decomp](https://github.com/cheviman/arcade-decomp), the decompiler's core (submodule)
 - `tools/console/`: [console-decomp](https://github.com/cheviman/console-decomp), the TLCS-900/H and the Neo Geo
   Pocket Color (submodule)
+- `runtime/`: the reader of your cartridge and BIOS (`rom_set.c`), for the tools that run the original code
+- `tests/controls/`: the scenarios, controls scripts for `ngpref` (format in console-decomp's `ngp/script.h`)
 - `rom/`: your dumps (ignored by git)
 - `external/`: other people's work read for reference (ignored by git)
+
+## Building and running
+
+With `rom/sonic.ngc` and `rom/ngpcbios.rom` in place (any name: they are known by their CRC32), CMake 3.20, a
+C++20 compiler and Python 3:
+
+    cmake -S . -B build/msvc
+    cmake --build build/msvc --config Release --target ngpref
+    build/bin/ngpref --script tests/controls/setup.txt --save-nvram build/setup.nv
+    build/bin/ngpref --nvram build/setup.nv --script tests/controls/neo_south_island.txt --video-dump 1700 --video-dir build
+
+The first run sets the console up as a new one is (its BIOS asks once) and keeps its NVRAM; the second plays to
+Neo South Island and writes frame 1700 as `build/frame_1700.bmp`. `ngpref --help` lists the rest.
 
 ## Thanks
 
