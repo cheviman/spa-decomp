@@ -3,7 +3,7 @@ Name:        extract_assets.py
 Description: the cartridge's binary files (the ones Valley Bell's disassembly includes whole) and the data the
              listing holds that has a form of its own, cut from the player's own cartridge dump, as they are and
              in forms one can edit, and the check that the edited forms build the cartridge's bytes back exactly
-Version:     0.2.0
+Version:     0.3.0
 Created:     28-11-2026
 Modified:    28-11-2026
 Author:      Sebastian Toyos
@@ -24,18 +24,22 @@ has, from the code that reads it (tools/forms/ has the text and WAV forms):
     of tiles with its offset), and a picture of each sprite drawn from the sprites' tiles (sprites/PATH.png,
     index 0 see-through), which is not read back;
   - the levels' block layouts (BlkPlane1/2, as wide as the level's header says), block tile maps (a block a
-    line), tile collision values, plane palette lists, and the hidden Sonic screen's tile map, as lines of
-    16-bit words (words/PATH.txt);
+    line), tile collision values, plane palette lists, the scripted objects' paths (ObjParams, a point a line),
+    and the hidden Sonic screen's tile map, as lines of 16-bit words (words/PATH.txt);
   - the levels' object layouts (Objects.bin, read by LoadObjects) as a list a screen (objects/PATH.txt);
   - the SEGA voice (sound/SegaSound.bin, 8-bit unsigned PCM played by WAVE_OUT on timer 2 at 8000 Hz) as a WAV
     (sound/PATH.wav).
-The listing's own data with a form: PalCollection (the palette lines every palette ID indexes, 3 colours of
-0BGR a line, from its label to the next one in symbols.txt) as words, 3 a line (palettes/PalCollection.txt).
+The listing's own data with a form, each label's from its address to the next label's in symbols.txt:
+PalCollection (the palette lines every palette ID indexes, 3 colours of 0BGR a line) as words, 3 a line
+(palettes/PalCollection.txt); and the scripts and tables (tools/forms/script.py: the animation scripts, the hit
+box lists, the special stage's and boss 6's scripts, the objects' definitions ObjectPtrList points at,
+CollisionData, LevelTable and the level headers), a text a run of consecutive labels of those kinds, a command a
+line (scripts/LABEL.txt, LABEL the run's first).
 With --check, nothing is written: each file is built back from its form and compared with the dump's bytes
 at its address (a tile set from its PNG and its count in tiles.txt, the rest from their text, WAV or raw
-copy). A file missing, a picture of the wrong size or an index above 3, a text that does not parse, and any
-byte that differs are each a failure, printed as PATH: what, at most 20 of them, then the count of each form
-and of the failures. It exits 1 if there is any failure, else 0.
+copy, a script run from its text). A file missing, a picture of the wrong size or an index above 3, a text
+that does not parse, and any byte that differs are each a failure, printed as PATH: what, at most 20 of them,
+then the count of each form and of the failures. It exits 1 if there is any failure, else 0.
   py tools/extract_assets.py [--rom FILE] [--assets assets.txt] [--symbols symbols.txt] [--out assets] [--check]
 """
 import argparse
@@ -56,6 +60,7 @@ from forms.sprite import sprite_to_text, sprite_from_text, sprite_picture
 from forms.words import words_to_text, words_from_text
 from forms.objects import objects_to_text, objects_from_text
 from forms.wav import pcm_to_wav, wav_to_pcm
+from forms.script import script_to_text, script_from_text
 
 TILE_PALETTE = [(255, 255, 255), (170, 170, 170), (85, 85, 85), (0, 0, 0)]
 ROM_SIZE = 2097152
@@ -63,13 +68,28 @@ ROM_CRC = (0x356F0849, 0x8BD22145)
 CARTRIDGE_BASE = 0x200000
 SEGA_VOICE_RATE = 8000  # timer 2 on T1 (the clock / 128, 48000 Hz) with TREG2 6, as WAVE_OUT sets it
 HEADERLESS_TILES = re.compile(r"^(sprites/Tiles|level/.*_TileData|art/.*_Tiles)\.bin$")
-LEVEL_WORDS = re.compile(r"^level/.*_(BlkPlane[12]|BlkTileMap|Coll|PalsPlane[12])\.bin$")
+LEVEL_WORDS = re.compile(r"^level/.*_(BlkPlane[12]|BlkTileMap|Coll|PalsPlane[12]|ObjParams)\.bin$")
 # The words a line of each kind of word file: a block's 4x4 tile map, 16 collision values, one palette ID (a
-# plane's palette line each), the hidden Sonic screen's 20 tiles a row; a block layout is a level's row.
-WORDS_WIDTH = {"BlkTileMap": 16, "Coll": 16, "PalsPlane1": 1, "PalsPlane2": 1}
+# plane's palette line each), a path's point (X, Y: GetPathData reads the scripted objects' paths a point at a
+# time, forward or back, each path between two points with X 0), the hidden Sonic screen's 20 tiles a row; a
+# block layout is a level's row.
+WORDS_WIDTH = {"BlkTileMap": 16, "Coll": 16, "PalsPlane1": 1, "PalsPlane2": 1, "ObjParams": 2}
 OTHER_WORDS = {"art/HiddenSonic_TileMap.bin": 20}
 # The listing's data with a form: label, the form's file, words a line.
 LISTING_DATA = [("PalCollection", "palettes/PalCollection.txt", 3)]
+# The listing's data the game reads as scripts and tables (tools/forms/script.py): each data label's kind, from
+# its name; the objects' definitions are the labels ObjectPtrList points at (InitializeObj reads them through it).
+SCRIPT_KINDS = [
+	("script", re.compile(r"^(AniScr|PAniScr|asLoc)_")),
+	("hitbox", re.compile(r"^((HbBdy|HbAtk|HbGen)_|Spikes_[AB]B[0-9]+$)")),
+	("spcstg", re.compile(r"^(SpcStg_|ss[A-Z])")),
+	("boss6", re.compile(r"^B6Scr_")),
+	("boss6spin", re.compile(r"^(Boss6sScript$|b6sloc_)")),
+	("collision", re.compile(r"^CollisionData$")),
+	("level", re.compile(r"^LevelTable$")),
+	("lvlhdr", re.compile(r"^LvlHdr_")),
+]
+OBJECT_LIST = "ObjectPtrList"
 
 
 def find_rom(rom_dir):
@@ -122,6 +142,50 @@ def listing_data_range(symbols, label):
 			following = [a for a, _ in symbols[i + 1:] if a > address]
 			return (address, following[0]) if following else None
 	return None
+
+
+def read_data_labels(path):
+	"""The names of symbols.txt's data labels (the cartridge's data, not its code)."""
+	names = set()
+	with open(path, encoding="latin-1") as f:
+		for line in f:
+			parts = line.split()
+			if len(parts) >= 3 and not line.startswith("#") and parts[1] == "data":
+				names.add(parts[2])
+	return names
+
+
+def script_runs(rom, symbols, data_labels):
+	"""The runs of consecutive labels the game reads as scripts and tables: a list of (sections, end), sections
+	the run's (address, name, kind) in order, end the address of the next label after it. A label at the address
+	of the section before it (another name of it) is left out."""
+	kinds = {}
+	for address, name in symbols:
+		if name in data_labels:
+			kind = next((k for k, pattern in SCRIPT_KINDS if pattern.match(name)), None)
+			if kind:
+				kinds[name] = kind
+	span = listing_data_range(symbols, OBJECT_LIST)
+	if span:
+		first_name = {}
+		for address, name in symbols:
+			first_name.setdefault(address, name)
+		for (pointer,) in struct.iter_unpack("<I", rom[span[0] - CARTRIDGE_BASE:span[1] - CARTRIDGE_BASE]):
+			if pointer in first_name:
+				kinds[first_name[pointer]] = "object"
+	runs = []
+	current = []
+	for address, name in symbols:
+		if current and address == current[-1][0]:
+			continue
+		if name in kinds:
+			current.append((address, name, kinds[name]))
+		elif current:
+			runs.append((current, address))
+			current = []
+	if current:
+		runs.append((current, CARTRIDGE_BASE + ROM_SIZE))
+	return runs
 
 
 def level_widths(rom, symbols):
@@ -437,6 +501,13 @@ def main():
 			print(f"{label} is not in {symbols_path}", file=sys.stderr)
 			sys.exit(1)
 		listing.append((label, span[0], span[1] - span[0], target, width))
+	runs = script_runs(rom, symbols, read_data_labels(symbols_path))
+	label_names = {}
+	for address, name in symbols:
+		label_names.setdefault(address, name)
+	label_addresses = {name: address for address, name in symbols}
+	sprite_names = {address: path for address, length, path, label in entries if path.endswith(".spr")}
+	sprite_addresses = {path: address for address, path in sprite_names.items()}
 
 	if args.check:
 		tile_counts = {}
@@ -467,11 +538,26 @@ def main():
 			built = words_from_text(read_lines(path)) if os.path.exists(path) else f"missing {path}"
 			compare(failures, label, "the words text does not parse" if built is None else built,
 				rom[address - CARTRIDGE_BASE:address - CARTRIDGE_BASE + length])
+		for sections, end in runs:
+			base = sections[0][0]
+			expected = rom[base - CARTRIDGE_BASE:end - CARTRIDGE_BASE]
+			# As for the binary files, whether a run fits its form is decided from the dump's bytes.
+			if script_to_text(expected, base, sections, label_names, sprite_names) is None:
+				counts["listing raw"] = counts.get("listing raw", 0) + 1
+				continue
+			counts["scripts"] = counts.get("scripts", 0) + 1
+			counts["script labels"] = counts.get("script labels", 0) + len(sections)
+			path = os.path.join(out_dir, "scripts", sections[0][1] + ".txt")
+			built = (script_from_text(read_lines(path), base, label_addresses, sprite_addresses)
+				if os.path.exists(path) else f"missing {path}")
+			compare(failures, sections[0][1], "the script text does not parse" if built is None else built, expected)
 
 		for failure in failures[:20]:
 			print(failure)
 		names = [("tiles", "tile sets"), ("map", "maps"), ("sprite", "sprites"), ("words", "word files"),
-			("objects", "object layouts"), ("wav", "WAV"), ("listing", "listing data"), ("raw", "raw")]
+			("objects", "object layouts"), ("wav", "WAV"), ("listing", "listing data"),
+			("scripts", "script and table runs"), ("script labels", "labels in them"),
+			("listing raw", "runs with no form"), ("raw", "raw")]
 		print("checked: " + ", ".join(f"{counts.get(k, 0)} {name}" for k, name in names) + f"; {len(failures)} failures")
 		sys.exit(1 if failures else 0)
 
@@ -503,6 +589,20 @@ def main():
 		write_lines(os.path.join(out_dir, target), [f"# {label}: {length // 6} palette lines of 3 colours (0BGR), "
 			"the line's palette ID after the #"] + lines)
 
+	scripts_written = 0
+	script_labels = 0
+	for sections, end in runs:
+		base = sections[0][0]
+		lines = script_to_text(rom[base - CARTRIDGE_BASE:end - CARTRIDGE_BASE], base, sections, label_names,
+			sprite_names)
+		if lines is None:
+			continue
+		scripts_written += 1
+		script_labels += len(sections)
+		header = [f"# {base:06X}-{end:06X}: the listing's data as the game reads it (tools/forms/script.py), a "
+			"section a label: KIND NAME, then its commands"]
+		write_lines(os.path.join(out_dir, "scripts", sections[0][1] + ".txt"), header + lines)
+
 	tiles_txt_path = os.path.join(out_dir, "tiles.txt")
 	os.makedirs(out_dir, exist_ok=True)
 	with open(tiles_txt_path, "w", encoding="latin-1", newline="\n") as f:
@@ -516,6 +616,7 @@ def main():
 	print(f"object layouts as text: {written.get('objects', 0)}")
 	print(f"sounds as WAV: {written.get('wav', 0)}")
 	print(f"listing data as text: {len(listing)} ({', '.join(label for label, *_ in listing)})")
+	print(f"script and table runs as text: {scripts_written} of {len(runs)} ({script_labels} labels)")
 	kinds = {}
 	for path in raw_only:
 		kind = os.path.splitext(path)[1] or "(none)"

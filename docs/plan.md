@@ -672,6 +672,76 @@ frame by frame against MAME's cores, and ported with SDL 3 to every platform the
   reference's sound (step 3) and the voice's rate here (8000 Hz from MAME's T1) would be MAME's error, not the
   console's.
 
+## What the sixteenth round found (the scripts and tables of the listing, and the paths, in editable forms, 28-11-2026)
+
+- **The animation scripts** (`DoAnimScript`, its jump table `AniScriptJmpTbl`): 15 commands, an opcode and its
+  operands (`_aniInc.asm`'s macros are the format, every one checked against its handler): `asEnd`, the sprite
+  commands (`asSpriteWait`, `asPosSprite`, `asSpriteFlag`: a sprite is the low word of its address, read by
+  `CopySprites` at 200000h + that word, since `IZ` takes the low word of `SpriteCollectn`), `asJump`, `asCall` and
+  `asCondJump` (24-bit addresses; the condition one of 10 operators, `GT` to `NE`, a jump table of 4-byte pairs),
+  `asWait`, the writes of 1, 2 and 4 bytes to the object (`asWriteLong` to `objBdyBox`/`objAtkBox` gives the hit
+  boxes), `asPlaySound`, `asPlrSprite`, `asPalette`, and `asFrameIndex`, followed by as many entries as its count:
+  6-byte `asPosSprite` or, when the first is an `asSpriteFlag`, 4-byte ones (the handler takes the size from the
+  first entry's opcode). An `asEnd` or `asJump` ends what the script can reach: the bytes after one, up to the
+  next label, are not commands (one `AniScr_3DEDDA` ends in a hit box list with no label, the others in the
+  `FF` of an alignment).
+- **The hit box lists** (`CheckCollision`, `GetHitBoxCoords`): boxes of 4 bytes (X, Y signed, width and height),
+  the first always a box, the rest up to `8080h`; a list may run on into the next label (`HbAtk_3D1828` into
+  `HbBdy_3D182C`), and a label may hold two (`HbBdy_3E08A6`). `Spikes_AtkBox`/`Spikes_BdyBox` are tables of
+  pointers to the 16 lists `Spikes_AB*`/`Spikes_BB*`, not lists.
+- **The special stage scripts** (`DoSpcStgScript`, `SSCmdTable`): 13 commands of 2 or 4 bytes (`_spcStgInc.asm`)
+  and `ssInit` (`FF`, read before the table); `ssEnd` and `ssReturn` have a second byte the handler never reads
+  (00 in every one). The test stage's script holds jumps one after the other, a menu the debug code jumps into,
+  so here no command ends the section.
+- **Boss 6's scripts** (`DoBoss6Script`, `DoBoss6sScript`, `_aniInc_Boss6.asm`): a byte below 80h is a step (its
+  delay and 2 bytes in the boss's script, 2 bytes in all in the spin's), the others commands: in the boss's
+  `F4` a sound, `F5`, `F6` and its byte, `FC`, `FD`, any other the end; in the spin's `F5` a sound, `F6` the attack
+  box, `FE` a jump (taken unless the object's bit 6 says not), `FF` the end.
+- **The tables**: an object's definition (`Object`, read by `InitializeObj` through `ObjectPtrList`, 122 of them:
+  its program, script, palette ID and flags, then the bytes its own code reads), `CollisionData` (56
+  `CollisonDef` lines, 2 a collision value, `TileID2CollVal`), `LevelTable` (17 `LevelStruct`) and the 13 level
+  headers (`LevelHeader`, plain data in the listing).
+- **The form** (`tools/forms/script.py`, `scripts/LABEL.txt`): one text a run of consecutive labels of these
+  kinds, a section a label (`script NAME`, `hitbox`, `spcstg`, `boss6`, `boss6spin`, `object`, `collision`,
+  `level`, `lvlhdr`), then a command a line by the macro's name, its operands by name where they have one: the
+  object's field (`objBdyBox`...), the operator, the tube's direction, a sprite by its `.spr` file of
+  `assets.txt`, an address by its label of `symbols.txt` (a section's own name first), else in hex. The bytes
+  no command reads are `bytes` lines. A text builds back from its own labels' places, so a command added or
+  removed moves the labels after it and the jumps to them follow. Which label is which kind is decided from its
+  name (Valley Bell's prefixes) and, for the objects, from `ObjectPtrList`'s pointers in the dump; the probe of the
+  round (`.cranker/r16/probe_anim.py`, `probe_ss.py`) found the commands' places the same as the listing's macros
+  in every label but the three above.
+- **The paths** (`ObjParams.bin`, read by `GetPathData` through the object's layout entry: its last 4 bytes are
+  the path's address and the direction it is entered in, bit 7 to read it backwards): points of two words (X, Y),
+  each path between two `0, 0` points; the 7 files with bytes are words 2 a line now.
+- **`--check`**: 0 failures: 312 tile sets, 542 maps, 1871 sprites, 76 word files (63 and the 13 `ObjParams`, 6
+  of them empty), 13 object layouts, 1 WAV, `PalCollection`, 151 runs of script and table labels (932 labels:
+  541 scripts, 209 hit box lists, 32 special stage, 11 and 2 of boss 6, 122 objects, `CollisionData`,
+  `LevelTable`, 13 level headers), 127 raw. Its check (`.cranker/r16/check_extract_assets.py`) also reads the first runs with its own
+  reading and makes `--check` fail on one value changed in a section of each kind, a jump's line dropped and a
+  script's text deleted.
+- **Still raw**: of the binary files, the sound's 127 (the Z80 driver, 36 songs, 90 effects; its sequences' format
+  is the driver's, Z80 code not read yet). Of the listing's data (23447 rows, 137601 bytes, `cartridge_map.tsv`'s
+  data rows), the forms hold 14527 rows, 30825 bytes; 8920 rows, 106776 bytes are left, the asm source their only
+  form: 32768 of them the save area and the system's block (3F8000-3FFFFF, not the game's), then the pointer
+  tables (`off_*`, 26040), words and bytes IDA left unnamed (`word_*` 22251 with the save area's, `byte_*`
+  8383), the font's tiles (`Font_Tiles`, 6400), the sound's groups (`SndGrp_*`, 6908, and `SndDrv_InsData`), the
+  texts (`Txt_*`, `asc_*`, the menus'), the 23 single hit boxes IDA typed `HitBoxDat2` (`stru_*`, reached from
+  code and tables, not from a script), and tables like `Player_SprList`, `SineVals`, `PalBlendLUT`,
+  `ObjectPtrList`, the puzzle's. Each needs its reader read; the pointer tables could be a form of labels.
+- **The local worker** drafted the form (`tools/forms/script.py`) from a spec and a check of mine
+  (`.cranker/r16/check_script.py`: the examples, the inputs to refuse, every real run of the cartridge against a
+  parse of my own that follows the readers). The first try, with a table of the commands in prose, went round in
+  a loop of `if op == N` and was stopped; sent again with the commands as a Python table to copy, its three
+  rounds got closer (29, 29, 15 errors: the names never written or read, then the frame entries looked for 3
+  bytes too far), and the last two slips were mine to fix (an entry line written with the section's kind as its
+  keyword, the `asFrameIndex` line kept before its bytes), one line each. The tables, sent with that module, were
+  right at its first round: my check's example had the collision line's longs in the wrong place, and the worker's
+  three rounds all gave the right bytes against it. Its review of `extract_assets.py`'s diff found no defect. The
+  integration and the check of the whole tool were mine. In all: 152527 tokens consumed, 4774 effective by the
+  worker's count (the tables' 72000, right at the first round, are counted lost to my check's error), 1 of 3
+  pieces right by the second try.
+
 ## The steps, each with its check
 
 1. **Repositories**: `spa-decomp` (tools/core = arcade-decomp, tools/console = console-decomp on `ngp`) and
@@ -709,8 +779,12 @@ frame by frame against MAME's cores, and ported with SDL 3 to every platform the
    the binary files cut with the tile sets as PNG and the maps as text (`tools/extract_assets.py --check`, 0
    failures); the fifteenth round the sprites, palettes, levels and the SEGA voice (`tools/forms/`: 1871
    sprites, 63 word files, 13 object layouts, `PalCollection`, 13 tile data with no count as PNG, the voice as
-   WAV; `--check` 0 failures); left: the sound's sequences and driver, `ObjParams.bin` (140 files still raw),
-   the listing's `db`/`dw` data (the animation and special stage scripts, the tables), the RAM's types.
+   WAV; `--check` 0 failures); the sixteenth round the scripts and tables of the listing and the paths
+   (`tools/forms/script.py`: 151 runs of 932 labels, the animation, hit box, special stage and boss 6 scripts,
+   the objects' definitions, `CollisionData`, `LevelTable`, the level headers; `ObjParams.bin` as words;
+   `--check` 0 failures); left: the sound's sequences and driver (127 files still raw), the listing's other data
+   (106776 bytes, 32768 of them the save area and the system's block: the pointer tables, IDA's unnamed words
+   and bytes, the font, the sound's groups, the texts, the single hit boxes), the RAM's types.
 7. **The 1:1 translator and the decompiler** (on arcade-decomp's core). Check: the same hashes as `ngpref` in every
    frame of every scenario; then the noise report, 0 reads of the ROM.
 8. **The port** (SDL 3, the minimum of ports-dispositivos, 64-bit only). Check: that minimum, and the resource bar
