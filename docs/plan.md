@@ -608,6 +608,70 @@ frame by frame against MAME's cores, and ported with SDL 3 to every platform the
   `listing_map.py` found the stale header and dates; its other 13 points were not defects (the check covers them).
   In all: 230316 tokens consumed, 48808 effective, 2 of 5 pieces right by the second try.
 
+## What the fifteenth round found (the sprites, palettes, levels and the SEGA voice in editable forms, 28-11-2026)
+
+- **The sprites** (`.spr`, read by `CopySprites`): a u16 count of tiles (the game takes its low byte, and skips
+  a sprite that would pass 64 tiles in the frame), then 4-byte entries, a tile id and its signed X and Y, or
+  8-byte columns, `FFFF`, a u16 whose low byte is the column's height in tiles (its high byte is 0 in every
+  file and unused), the first tile id and its X and Y, the next tiles going down 8 pixels each. The entries
+  are read until the count runs out, and in all 1871 files they end exactly at the file's end (5522 tiles,
+  3191 columns, 18 sprites with no tiles). A tile id is the index of a 16-byte tile in `sprites/Tiles.bin`
+  (`SpriteTiles`, 10916 tiles; `CopySprToVDP` copies tile id * 16 from it to the K2GE's tile 1BF on), every id
+  inside it. The text (`sprites/PATH.txt`) is `tiles N`, then `tile TTTT X Y` and `column TTTT X Y C`, a
+  `bytes` line for whatever does not fit an entry (none in the cartridge). Beside it a picture of the sprite
+  drawn from `Tiles.bin` (1853, not read back), the first entry on top, its origin written as a comment.
+- **The palettes**: `PalCollection` (23C748-23DF48, up to `PalBlendLUT`) is 1024 palette lines of 3 colours
+  (0BGR), one line a palette ID (`LoadPaletteLine`: ID * 6); a level's `PalsPlane1/2.bin` is the list of IDs
+  `LoadLevelPal` gives each plane's palette lines, from line 10h (plane 1) or 20h (plane 2), up to an `FFFF`.
+  Both are words in text, with each line's ID or number as a comment (`palettes/PalCollection.txt`, the only
+  form taken from the listing's data, its range from `symbols.txt`).
+- **The levels**: the header (`LvlHdr_*`, 34 bytes: SizeX and SizeY in blocks, the ring count, then 7
+  pointers) gives each block layout's width; `BlkPlane1/2.bin` are SizeX * SizeY block words in every level.
+  `BlkTileMap.bin` is 16 tile map words a 32x32 block; `Coll.bin` a collision value a level tile (the index
+  of 2 lines of 10 bytes in `CollisionData`, `TileID2CollVal`), up to an `FFFF` that also counts the tiles
+  `LoadLevelTiles` copies from `TileData.bin`. These, the plane palette lists and the hidden Sonic screen's
+  map (20 a row) are lines of hex words (`words/PATH.txt`, 63 files). `Objects.bin` (`LoadObjects`): the size
+  in screens, an offset a screen (row by row), then each screen's list (slot in `LvlObjFlags`, count, 10-byte
+  entries: id + 1, param, x, y, 4 bytes); in all 13 levels the lists follow each other in the table's order of
+  offsets with no gap and no screen sharing one, so the text (`objects/PATH.txt`: `cell X Y slot S` and its
+  `obj` lines) lays them out again from its order. The tile data with no count (`TileData.bin`, `Tiles.bin`,
+  `art/*_Tiles.bin`, 13 files) are PNGs as the tile sets are.
+- **The SEGA voice**: `WAVE_OUT` runs timer 2 on T1 (the clock / 128, 48000 Hz) with TREG2 6, 8000 Hz; the
+  13024 bytes of `SegaSound.bin` are a WAV of 8-bit unsigned mono at that rate (`sound/PATH.wav`).
+- **`--check`**: 0 failures, every form built back to the dump's bytes: 312 tile sets, 542 maps, 1871 sprites,
+  63 word files, 13 object layouts, 1 WAV, 1 listing range. A form that is missing is a failure: whether a file
+  fits its form is decided from the dump's bytes, not from what is on disk. Its check
+  (`.cranker/r15/check_extract_assets.py`) counts each form, decodes the palette lines, a block layout's width,
+  the voice and a tile of `Tiles.bin` itself, and makes `--check` fail on one value changed in a sprite, a block
+  tile map, an object layout, `PalCollection`, a palette list, a headerless tile set and the WAV, and on a
+  sprite's and an object layout's text deleted.
+- **Still raw: 140 files.** The sound (127: the Z80 driver, 36 songs `bgm20-43`, 90 effects `se80-D9`), whose
+  sequences' format is the driver's, Z80 code to read first; and `ObjParams.bin` (13, 7 of them with bytes,
+  1380 in all: the paths of the scripted objects, tubes and ramps), which no label reaches: the objects that
+  read it take its address from code, to be found in step 7. Besides them, of step 6: the listing's other
+  `db`/`dw` data (the animation and special stage scripts, `CollisionData`, the tables), and the RAM's types.
+- **The local worker** drafted the four forms (`tools/forms/`: sprite, words, objects, wav) from a spec with
+  exact examples and a check of mine (`.cranker/r15/check_forms.py`: the examples, the inputs to refuse, every
+  real file built back). Words right at the first try, the WAV at the first and the sprite at its second; the
+  objects failed three rounds reading `cell X Y slot S` as four tokens, and were right at the second try of
+  the batch that said it is five. Two drafts passed a check that was too weak: the sprite's text refused a
+  hand edit (it converted its result back and compared it with the lines given), the WAV refused a last odd
+  chunk with no pad and was full of its own reasoning as comments; the check then tested both, and they were
+  sent again with the rule. The integration in `extract_assets.py` and the check of it were mine; the worker's
+  review of its diff found no defect. In all: 119041 tokens consumed, 66739 effective, 6 of 8 pieces right by
+  the second try.
+- **Sonic Pocket Redux** (github.com/pastamania/sonicpocketredux, on GLITCHKISS/Sonic-Pocket, seen 28-11-2026
+  at Sebas's request): a static recompiler of the same cartridge to C++ (each instruction calls the
+  interpreter's handler of MAME's core; the code is generated at build time from the player's dump), on a
+  machine with an HLE BIOS after Mednafen's, checked against BizHawk's RAM (1077 of 1198 frames) and against its
+  own interpreter in lockstep (1200 frames of the attract). Its own code has no license (its NOTICE covers
+  only MAME's files), so nothing of it is taken; its notes (`docs/notes/`: sprites, level map, collision,
+  camera, player, the task scheduler) are facts to read in step 7, with the RAM's types. One claim to settle
+  against the hardware, not against MAME: it follows Mednafen's timers (T1 every 256 cycles, not 128; the Z80
+  interrupted at every timer 3 match), and says MAME's rising edge plays the music at half tempo. If so, the
+  reference's sound (step 3) and the voice's rate here (8000 Hz from MAME's T1) would be MAME's error, not the
+  console's.
+
 ## The steps, each with its check
 
 1. **Repositories**: `spa-decomp` (tools/core = arcade-decomp, tools/console = console-decomp on `ngp`) and
@@ -643,7 +707,10 @@ frame by frame against MAME's cores, and ported with SDL 3 to every platform the
    `binclude` files. Check: 0 bytes unexplained; each extractor `--check` byte for byte. Begun 28-11-2026 (the
    fourteenth round): every byte a line of the disassembly (`tools/listing_map.py`), `symbols.txt`, `assets.txt`,
    the binary files cut with the tile sets as PNG and the maps as text (`tools/extract_assets.py --check`, 0
-   failures); left: the sprites, levels, palettes, sound and scripts in editable forms, the RAM's types.
+   failures); the fifteenth round the sprites, palettes, levels and the SEGA voice (`tools/forms/`: 1871
+   sprites, 63 word files, 13 object layouts, `PalCollection`, 13 tile data with no count as PNG, the voice as
+   WAV; `--check` 0 failures); left: the sound's sequences and driver, `ObjParams.bin` (140 files still raw),
+   the listing's `db`/`dw` data (the animation and special stage scripts, the tables), the RAM's types.
 7. **The 1:1 translator and the decompiler** (on arcade-decomp's core). Check: the same hashes as `ngpref` in every
    frame of every scenario; then the noise report, 0 reads of the ROM.
 8. **The port** (SDL 3, the minimum of ports-dispositivos, 64-bit only). Check: that minimum, and the resource bar

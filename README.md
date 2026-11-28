@@ -46,12 +46,16 @@ As of 2026-11-28:
       labels, the registers and RAMs by name, Valley Bell's comments) and `assets.txt`, the 2942 binary files
 - [x] The binary files cut from your dump (`tools/extract_assets.py`): tile sets as PNG and tile maps as text,
       each built back to the cartridge's bytes by `--check`
-- [ ] The rest of the named data in editable forms: sprites, levels, palettes, sound, scripts
+- [x] The sprites, palettes, levels and the SEGA voice in editable forms (`tools/forms/`): each sprite as text and
+      a picture, the palettes, block layouts, block maps and collision as words, the object layouts by screen, the
+      tile data with no count as PNG, the voice as a WAV, all built back by `--check`
+- [ ] The rest of the named data in editable forms: the songs and effects, the objects' paths, the scripts
 - [ ] The translated program, then the decompiled C, the same as the reference in every frame
 
 ## Layout
 
 - `tools/core/`: [arcade-decomp](https://github.com/cheviman/arcade-decomp), the decompiler's core (submodule)
+- `tools/forms/`: the text and WAV forms of the cartridge's data (sprites, words, object layouts, the voice)
 - `tools/console/`: [console-decomp](https://github.com/cheviman/console-decomp), the TLCS-900/H and the Neo Geo
   Pocket Color (submodule)
 - `runtime/`: the reader of your cartridge and BIOS (`rom_set.c`), for the tools that run the original code
@@ -77,8 +81,8 @@ Neo South Island and writes frame 1700 as `build/frame_1700.bmp`. `ngpref --help
     py tools/extract_assets.py
     py tools/extract_assets.py --check
 
-cut the cartridge's binary files into `assets/` (tile sets as PNG, maps as text, the rest as they are) and build
-them back, byte for byte.
+cut the cartridge's binary files into `assets/` (tile sets as PNG; maps, sprites, palettes, block layouts and
+object layouts as text; the SEGA voice as WAV; the rest as they are) and build them back, byte for byte.
 
 ## Thanks
 
