@@ -671,6 +671,45 @@ frame by frame against MAME's cores, and ported with SDL 3 to every platform the
   interrupted at every timer 3 match), and says MAME's rising edge plays the music at half tempo. If so, the
   reference's sound (step 3) and the voice's rate here (8000 Hz from MAME's T1) would be MAME's error, not the
   console's.
+- **The timers, MAME's against Mednafen's (settled 28-11-2026, as far as the sources go): for this game they give
+  the same rates, and nothing measured on a console was found to say if both are right.** The game puts only
+  timers 2 and 3 on T1 (timer 0 is on TI0, the H-blank; T01MOD is only ever written 00). Timer 3 is the Z80's tick:
+  `RefreshZ80Timer` sets T23MOD's timer 3 to T1, TFFCR's bits 7-4 to B (TFF3 cleared, inverted at every timer 3
+  match), TREG3 = 2000 * 1000 / 20480 rounded = 98. Timer 2 is the voice's (TREG2 6).
+  - MAME 0.289 (our reference and the runtime): T1 every 128 clocks of 6.144 MHz (`>> 7`), the Z80's IRQ at
+    TO3's rising edge (`ngp.cpp`, `tlcs900_porta`), so every 2 matches: 2 * 98 * 128 = 25088 clocks, 244.9 Hz.
+    The voice at 6144000 / 128 / 6 = 8000 Hz; `ngpref`'s WAV of the attract has it 1.6281 s long (9.2045-10.8326 s),
+    13024 bytes at 8000 Hz.
+  - Mednafen (`src/ngp/interrupt.cpp`, NeoPop's, read in libretro's mirror of mednafen-git and beetle-ngp): its
+    ticks are MAME's clocks (515 a line, a NOP 2 in both), T1 every 256 (`TIMER_T1_RATE`, 8 * 32), `Z80_irq()` at
+    every timer 3 match with no flip-flop: 98 * 256 = 25088, the same 244.9 Hz. Timer 2 alone counts at
+    `TIMER_T1_RATE / 2` ("Kludge :("), 128, so the voice is 8000 Hz there too. Read as a hint, not a fact: NeoPop's
+    T1 is half the console's, the kludge mends timer 2, and the every-match IRQ makes up for the TFF3 it leaves
+    out on timer 3.
+  - Sonic Pocket Redux's half tempo: its `docs/recomp-plan.md` sets "T1 = 256 cycles, not MAME's newer databook
+    rates, because they match the reference captures" (BizHawk's, which is Mednafen's core), and says MAME's rising
+    edge would play the music at half tempo. That is true only of its own T1 at 256 with MAME's edge, or against
+    MAME's "databook rates": PR 16204 (commit e241f2d, 20-09-2026) moved the taps to phiT1 = fc/8 (`>> 3`), PR
+    16255 (25-09-2026) put back `>> 7` because the timers ran 16 times fast and "garbled ngp/ngpc music";
+    MAME's master has `PRESCALE_T1 = 7`. Redux cites no recording of a console.
+  - The datasheet (TMP95C061, Toshiba, archive.org's copy, pages 71-73 and the PWM examples): phiT1 = 8/fc
+    ("phiT1 = 0.32 us (at 25MHz)"), 1 state = 2/fc. At the NGPC's 6.144 MHz that is 768 kHz, 16 times MAME's
+    T1 and 32 times Mednafen's: the voice at 128 kHz, the Z80's tick at 3.9 kHz. It does not fit the console (the
+    NGPC's TLCS-900/H is SNK's own chip, not a TMP95C061, and its prescaler's clock is not in the datasheet), so the
+    datasheet settles nothing here. NgpCraft's page (tixul.github.io, "fc = 384 KHz fixed", T1 = fc/8 = 20.83 us)
+    says 48 kHz but gives no source, and its timer 3 example is this game's own `WA * 1000 / 20480`.
+  - What points to T1 at 128 clocks (48 kHz), not 256: Mednafen's kludge; the voice, 8-bit at TREG2 6, natural at
+    8000 Hz; and the game's own formula, a count of 20.48 us (128 clocks are 20.83 us, 256 are 41.67 us).
+    What is left open: the same formula reads as "an IRQ every 2000 us", that is at every match (498 Hz), which
+    on a console with T1 at 48 kHz would be twice the tempo of both emulators. Only a recording of a console
+    settles it: the SEGA voice 1.63 s long (T1 at 128 on timer 2; 3.26 s at 256), and a song's loop in seconds
+    against `ngpref`'s (the same, or half, for the Z80's tick).
+  - If MAME is wrong: at T1 = 256 everywhere, `SEGA_VOICE_RATE` in `tools/extract_assets.py` becomes 4000 and the
+    music in `ngpref` and the runtime halves with MAME's edge; at the Z80 interrupted at every match, the music
+    doubles and the voice stays. Either is a change to the reference (MAME's `tmp95c061.cpp` or `ngp.cpp`) and to
+    the runtime's `handle_timers` or its TO3 together, and the sound's step 3 checks run again; the hashes of the
+    picture and the trace would change as well, since the game waits on the Z80 (`WaitForZ80Tick`, `Z80Int`).
+    Nothing is changed until a recording says so.
 
 ## What the sixteenth round found (the scripts and tables of the listing, and the paths, in editable forms, 28-11-2026)
 
@@ -786,6 +825,8 @@ frame by frame against MAME's cores, and ported with SDL 3 to every platform the
    (106776 bytes, 32768 of them the save area and the system's block: the pointer tables, IDA's unnamed words
    and bytes, the font, the sound's groups, the texts, the single hit boxes), the RAM's types.
 7. **The 1:1 translator and the decompiler** (on arcade-decomp's core). Check: the same hashes as `ngpref` in every
-   frame of every scenario; then the noise report, 0 reads of the ROM.
+   frame of every scenario; then the noise report, 0 reads of the ROM. To read first, for the names and the RAM's
+   types: Sonic Pocket Redux's `docs/notes/` (sprites, level map, collision, camera, player, the task scheduler),
+   facts to check against the listing and `ngpref` before a name is given, never its code (no license).
 8. **The port** (SDL 3, the minimum of ports-dispositivos, 64-bit only). Check: that minimum, and the resource bar
    measured (RAM, time per frame with SDL's software renderer forced).
