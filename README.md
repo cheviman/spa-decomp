@@ -11,7 +11,7 @@ Work in progress: just started (`docs/plan.md`).
 
 ## Status
 
-As of 2026-11-27:
+As of 2026-11-28:
 
 - [x] Cartridge verification: the World release, CRC32 356f0849 (MAME's `sonic`) or 8bd22145 (the same with its
       save area erased)
@@ -42,7 +42,11 @@ As of 2026-11-27:
       (`tools/listing_coverage.py`), what never runs (mostly the link's screens) written down in `docs/plan.md`
 - [x] The TLCS-900/H decoder (console-decomp's `tlcs900/disassembler.py`): MAME's text and length at every offset of
       the cartridge, of the BIOS and of an image of every opcode, with each instruction's operands and flow
-- [ ] The coverage and the named data
+- [x] Every byte of the cartridge a line of the disassembly (`tools/listing_map.py`): `symbols.txt` (functions,
+      labels, the registers and RAMs by name, Valley Bell's comments) and `assets.txt`, the 2942 binary files
+- [x] The binary files cut from your dump (`tools/extract_assets.py`): tile sets as PNG and tile maps as text,
+      each built back to the cartridge's bytes by `--check`
+- [ ] The rest of the named data in editable forms: sprites, levels, palettes, sound, scripts
 - [ ] The translated program, then the decompiled C, the same as the reference in every frame
 
 ## Layout
@@ -52,6 +56,8 @@ As of 2026-11-27:
   Pocket Color (submodule)
 - `runtime/`: the reader of your cartridge and BIOS (`rom_set.c`), for the tools that run the original code
 - `tests/controls/`: the scenarios, controls scripts for `ngpref` (format in console-decomp's `ngp/script.h`)
+- `symbols.txt`, `assets.txt`: the program's names and the binary files' places (addresses only, no game data)
+- `assets/`: the binary files cut from your dump by `tools/extract_assets.py` (ignored by git)
 - `rom/`: your dumps (ignored by git)
 - `external/`: other people's work read for reference (ignored by git)
 
@@ -67,6 +73,12 @@ C++20 compiler and Python 3:
 
 The first run sets the console up as a new one is (its BIOS asks once) and keeps its NVRAM; the second plays to
 Neo South Island and writes frame 1700 as `build/frame_1700.bmp`. `ngpref --help` lists the rest.
+
+    py tools/extract_assets.py
+    py tools/extract_assets.py --check
+
+cut the cartridge's binary files into `assets/` (tile sets as PNG, maps as text, the rest as they are) and build
+them back, byte for byte.
 
 ## Thanks
 

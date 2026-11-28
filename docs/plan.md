@@ -28,6 +28,9 @@ frame by frame against MAME's cores, and ported with SDL 3 to every platform the
 | `external/spa-disassembly/` | Valley Bell's release, extracted (the download, its 7z: `D:\vs-cheviman\spa-port`) |
 | `build/asm/` | `external/spa-disassembly/disassembly` assembled with its `asw` (0 errors): `built.npc`, `Main.lst` (address and bytes of every line) |
 | `tests/controls/` | the scenarios, controls scripts for `ngpref` (console-decomp's `ngp/script.h`) |
+| `symbols.txt`, `assets.txt` | the program's names and comments, and the binary files' places (`tools/listing_map.py`) |
+| `tools/listing_map.py` | every byte of the cartridge as a line of the listing; writes `symbols.txt`, `assets.txt`, `build/asm/cartridge_map.tsv` |
+| `tools/extract_assets.py` | the binary files cut from the player's dump into `assets/` (tile sets as PNG, maps as text), `--check` |
 | `tools/listing_coverage.py` | the share of the listing's instructions the scenarios' traces run, and what never runs |
 | `tools/object_scenarios.py` | the objects of every level, read from the cartridge, and the `objects_*` scenarios |
 | `tools/console/`, branch `ngp` | MAME 0.289's sources, all BSD-3-Clause, in `tlcs900/mame/` (core, 900 and 900/H tables, disassembler, TMP95C061) and `ngp/reference/mame/` (ngp.cpp, K1GE/K2GE, T6W28); `external/mame/ngpc.xml` (ignored by git) |
@@ -561,6 +564,50 @@ frame by frame against MAME's cores, and ported with SDL 3 to every platform the
   SetBossHits was read; Chaotic Space's boss (byte_6792, a rocket a hit, the explosion at loc_3D2DDE) it found right.
   In all, this session: 560643 tokens consumed, 396983 effective, 27 of 31 pieces right at the first try.
 
+## What the fourteenth round found (every byte of the cartridge, the symbols and the binary files, 28-11-2026)
+
+- **Every byte is a line of the disassembly** (`tools/listing_map.py`): the numbered lines of AS's listing that
+  place bytes in 200000-3FFFFF, each as long as from its address to the next numbered line's (AS shows none of
+  INS3's bytes, 46 lines, nor a binclude's, and two of those are empty: `1-1_ObjParams.bin`, `7_ObjParams.bin`),
+  cover the cartridge with no gap and no overlap: 49979 instructions (151621 bytes), 23447 lines of data (137601)
+  and 2942 binary files (1807930). Its check, apart from the tool: each row's crc32 is the assembled image's
+  (`build/asm/built.npc`) bytes at its place, each binclude file is those bytes, and every label of AS's symbol
+  table in the cartridge is in `symbols.txt` at its address. Against the player's dump (`--rom`), 5 rows differ
+  outside the save area, the 5 `LD (mem),(mem)` of the first round (24 bytes, AS's other encoding), and 858 rows in
+  it, 5950 bytes: the disassembly's default save (`word_3F8000`, `word_3FA000`), where the erased dump has FF.
+- **`symbols.txt`**: 1067 functions (IDA's subroutine headers), 5272 code labels, 5130 data labels, and the
+  disassembly's 406 definitions by the IDA segment each is in (the `; end of 'NAME'` that closes it): 38 registers
+  (CPUREG, 00-FF: the TMP95C061's and the console's ports), 278 of the game's work RAM (WORK_RAM), 29 of the BIOS's
+  (BIOS_RAM, 6C00-6FFF), 3 of the Z80's RAM, 32 of the K2GE's registers and palettes (VREGS), 3 of its memory
+  (VRAM), and 23 values outside any segment (the macros' files: an object's field offsets, the scripts' operators
+  `asOp*`, the special stage's tube kinds), which a class by value had taken for registers. The comments are Valley
+  Bell's (the full-line comments at the first column above a label, and the label line's own): 90 symbols have
+  one; IDA's (references, segment lines, the commented-out `org`) are left out. The types and sizes of the RAM's
+  names are step 7's, where the code reads them.
+- **`assets.txt` and `tools/extract_assets.py`**: the 2942 binary files (address, size, path, label), cut from the
+  player's dump into `assets/` (ignored by git): 299 tile sets as PNG (19254 tiles: a count, then 16 bytes a tile,
+  the K2GE's 2-bit pixels, 16 tiles a row), 542 tile maps as text (width, height, the offset the game ignores, the
+  entries), the rest raw (1871 sprites, `.spr`, and 230 `.bin`: the levels' blocks, collision, objects and
+  palettes, the sound driver and its songs, the SEGA voice, the fonts). `--check` builds every file back from the
+  PNG, the text or the raw copy: 0 failures, each the dump's bytes and the disassembly's file (but the save area).
+  Its check (`.cranker/r14/check_extract_assets.py`) decodes the PNGs and maps with its own code, and makes
+  `--check` fail on one value changed in a picture, a map and a raw file.
+- **What is left of step 6**: the editable forms of the sprites (`.spr`: a count of tiles, then their places in
+  `sprites/Tiles.bin`), the levels' `.bin` (blocks, collision, object layouts: `tools/object_scenarios.py` reads
+  them already), the palettes (`PalCollection`), the sound (the songs' sequences, the SEGA voice as WAV) and the
+  data the listing holds as `db`/`dw` (the animation and special stage scripts, the tables), each with its
+  `--check`; then the RAM's names with their types.
+- **The local worker** drafted both tools from a spec and a check. `listing_map.py`: the first draft took the
+  rows' lengths from the bytes shown, my spec's fault (it said nothing of the empty binclude files nor that the
+  length is always the next line's address); sent again with those rules, its third round passed but for the
+  definitions' names (read from the bytes field), a comment rule (indented XREF lines tested after stripping) and
+  two IDA lines to leave out, fixed by hand (8 lines), and my check's own two slips (`binclude\t"`, a comment of
+  two lines). The class of the definitions by IDA's segment was mine. `extract_assets.py`: its first two rounds
+  failed on my check, which ran the draft outside `tools/` (no `core/` beside it); the third laid a row of tiles as
+  a list of lists; sent again with the layout written out, right at its second round. Its review of
+  `listing_map.py` found the stale header and dates; its other 13 points were not defects (the check covers them).
+  In all: 230316 tokens consumed, 48808 effective, 2 of 5 pieces right by the second try.
+
 ## The steps, each with its check
 
 1. **Repositories**: `spa-decomp` (tools/core = arcade-decomp, tools/console = console-decomp on `ngp`) and
@@ -593,7 +640,10 @@ frame by frame against MAME's cores, and ported with SDL 3 to every platform the
    differences at every offset of the cartridge, the BIOS and the image of every opcode
    (`ngp/reference/compare_tlcs900_with_mame.py`), every instruction of the listing the same length.
 6. **Coverage and named data**: `symbols.txt` from the disassembly's labels and comments; the asset cut from its
-   `binclude` files. Check: 0 bytes unexplained; each extractor `--check` byte for byte.
+   `binclude` files. Check: 0 bytes unexplained; each extractor `--check` byte for byte. Begun 28-11-2026 (the
+   fourteenth round): every byte a line of the disassembly (`tools/listing_map.py`), `symbols.txt`, `assets.txt`,
+   the binary files cut with the tile sets as PNG and the maps as text (`tools/extract_assets.py --check`, 0
+   failures); left: the sprites, levels, palettes, sound and scripts in editable forms, the RAM's types.
 7. **The 1:1 translator and the decompiler** (on arcade-decomp's core). Check: the same hashes as `ngpref` in every
    frame of every scenario; then the noise report, 0 reads of the ROM.
 8. **The port** (SDL 3, the minimum of ports-dispositivos, 64-bit only). Check: that minimum, and the resource bar
