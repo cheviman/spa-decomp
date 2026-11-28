@@ -1,0 +1,96 @@
+# Cosmic Casino act 2's star posts, from a console set up and off (--nvram build/setup.nv): the debug menu by the
+# poke at 499C (direction.txt), BEGINNING, act 3-2 picked in the level select (A at 870); for each of the act's star
+# posts (the object layout's object 0D: its number, place and second parameter), the lives poked to 5, the star
+# post's variables (67D4-67DB) as if it had been touched and the player's Y under 64 for 4 frames, the level's pit: a
+# life lost, the player starts again at the star post and runs right with jumps for 400 frames. The star posts: 0 at
+# 2648,624 (1170), 1 at 3800,1552 (1970), 2 at 5088,840 (2770)
+600 poke 499C DB
+650 press a
+700 press down
+730 press down
+760 press down
+790 press down
+820 press down
+870 press a
+1170 poke 67AF 05
+1170 poke 67D4 58
+1170 poke 67D5 0A
+1170 poke 67D6 7D
+1170 poke 67D7 02
+1170 poke 67DB 00
+1170 poke 67DA 00
+1170 poke 671E 20
+1170 poke 671F 00
+1171 poke 671E 20
+1171 poke 671F 00
+1172 poke 671E 20
+1172 poke 671F 00
+1173 poke 671E 20
+1173 poke 671F 00
+1550 hold right
+1560 press a
+1600 press a
+1640 press a
+1680 press a
+1720 press a
+1760 press a
+1800 press a
+1840 press a
+1880 press a
+1920 press a
+1950 release right
+1970 poke 67AF 05
+1970 poke 67D4 D8
+1970 poke 67D5 0E
+1970 poke 67D6 1D
+1970 poke 67D7 06
+1970 poke 67DB 01
+1970 poke 67DA 00
+1970 poke 671E 20
+1970 poke 671F 00
+1971 poke 671E 20
+1971 poke 671F 00
+1972 poke 671E 20
+1972 poke 671F 00
+1973 poke 671E 20
+1973 poke 671F 00
+2350 hold right
+2360 press a
+2400 press a
+2440 press a
+2480 press a
+2520 press a
+2560 press a
+2600 press a
+2640 press a
+2680 press a
+2720 press a
+2750 release right
+2770 poke 67AF 05
+2770 poke 67D4 E0
+2770 poke 67D5 13
+2770 poke 67D6 55
+2770 poke 67D7 03
+2770 poke 67DB 02
+2770 poke 67DA 00
+2770 poke 671E 20
+2770 poke 671F 00
+2771 poke 671E 20
+2771 poke 671F 00
+2772 poke 671E 20
+2772 poke 671F 00
+2773 poke 671E 20
+2773 poke 671F 00
+3150 hold right
+3160 press a
+3200 press a
+3240 press a
+3280 press a
+3320 press a
+3360 press a
+3400 press a
+3440 press a
+3480 press a
+3520 press a
+3550 release right
+3570 end

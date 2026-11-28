@@ -1,0 +1,980 @@
+# The true ending by play, from a console set up and off (--nvram build/setup.nv): the debug menu by the poke at 499C,
+# BEGINNING, the level select's cursor up 5 times from 1-1 and A (870): Last Utopia's boss; at 1470 MUTEKI on, right
+# and left with jumps. The extra boss needs the six emeralds of the special stages (6A64 & 3F) and the seventh the
+# boss drops (byte_68E2 bit 1, cleared when the boss loads), poked at 2500 and 2590. A boss counts its hits at its
+# object's +39h (8, SetBossHits) and, when the count runs out, its routine goes on at its defeat; here the object's
+# routine (+00, four bytes in one frame) is poked to that defeat, the state the last hit leaves it in, but for that
+# hit's sound and flash. At 2600, its object at 414A, loc_3A4735: its defeat, SONIC GOT THROUGH FINAL, Super Sonic
+# (SonicTurnSuper), Chaotic Space. Its boss counts the rockets Super Sonic breaks at byte_6792; poked to 1 every 500
+# frames, the rings to 50 every 300, Super Sonic right and left, up and down: a rocket broken ends the count,
+# sub_39E9BF's Chaotic Space branch, and the good ending's credits
+600 poke 499C DB
+650 press a
+700 press up
+730 press up
+760 press up
+790 press up
+820 press up
+870 press a
+1470 poke 67C0 01
+1470 poke 67AF 05
+1470 hold right
+1475 press a
+1505 press a
+1535 press a
+1565 press a
+1595 press a
+1625 press a
+1655 press a
+1685 press a
+1715 press a
+1745 press a
+1770 release right
+1780 hold left
+1785 press a
+1815 press a
+1845 press a
+1875 press a
+1900 release left
+1905 hold right
+1910 press a
+1940 press a
+1970 press a
+2000 press a
+2025 release right
+2030 hold left
+2035 press a
+2065 press a
+2095 press a
+2125 press a
+2150 release left
+2155 hold right
+2160 press a
+2190 press a
+2220 press a
+2250 press a
+2275 release right
+2280 hold left
+2285 press a
+2315 press a
+2345 press a
+2375 press a
+2400 release left
+2405 hold right
+2410 press a
+2440 press a
+2470 press a
+2500 press a
+2500 poke 6A64 3F
+2500 poke 68E2 02
+2525 release right
+2530 hold left
+2535 press a
+2565 press a
+2590 poke 6A64 3F
+2590 poke 68E2 02
+2595 press a
+2600 poke 414A 35
+2600 poke 414B 47
+2600 poke 414C 3A
+2600 poke 414D 00
+2625 press a
+2650 release left
+2655 hold right
+2660 press a
+2690 press a
+2720 press a
+2750 press a
+2775 release right
+2780 hold left
+2785 press a
+2815 press a
+2845 press a
+2875 press a
+2900 release left
+2905 hold right
+2910 press a
+2940 press a
+2970 press a
+3000 press a
+3025 release right
+3030 hold left
+3035 press a
+3065 press a
+3095 press a
+3125 press a
+3150 release left
+3155 hold right
+3160 press a
+3190 press a
+3220 press a
+3250 press a
+3275 release right
+3280 hold left
+3285 press a
+3315 press a
+3345 press a
+3375 press a
+3400 release left
+3405 hold right
+3410 press a
+3440 press a
+3470 press a
+3500 press a
+3525 release right
+3530 hold left
+3535 press a
+3565 press a
+3595 press a
+3625 press a
+3650 release left
+3655 hold right
+3660 press a
+3690 press a
+3720 press a
+3750 press a
+3775 release right
+3780 hold left
+3785 press a
+3815 press a
+3845 press a
+3875 press a
+3900 release left
+3905 hold right
+3910 press a
+3940 press a
+3970 press a
+4000 press a
+4025 release right
+4030 hold left
+4035 press a
+4065 press a
+4095 press a
+4125 press a
+4150 release left
+4155 hold right
+4160 press a
+4190 press a
+4220 press a
+4250 press a
+4275 release right
+4280 hold left
+4285 press a
+4315 press a
+4345 press a
+4375 press a
+4400 release left
+4405 hold right
+4410 press a
+4440 press a
+4470 press a
+4500 press a
+4525 release right
+4530 hold left
+4535 press a
+4565 press a
+4595 press a
+4625 press a
+4650 release left
+4655 hold right
+4660 press a
+4690 press a
+4720 press a
+4750 press a
+4775 release right
+4780 hold left
+4785 press a
+4800 poke 6792 01
+4800 poke 67A8 32
+4800 poke 67A9 00
+4800 hold right
+4800 hold up
+4830 press a
+4895 release right
+4895 release up
+4900 hold right
+4900 hold down
+4930 press a
+4995 release right
+4995 release down
+5000 hold left
+5000 hold up
+5030 press a
+5095 release left
+5095 release up
+5100 poke 67A8 32
+5100 poke 67A9 00
+5100 hold left
+5100 hold down
+5130 press a
+5195 release left
+5195 release down
+5200 hold right
+5230 press a
+5295 release right
+5300 poke 6792 01
+5300 hold left
+5330 press a
+5395 release left
+5400 poke 67A8 32
+5400 poke 67A9 00
+5400 hold right
+5400 hold up
+5430 press a
+5495 release right
+5495 release up
+5500 hold right
+5500 hold down
+5530 press a
+5595 release right
+5595 release down
+5600 hold left
+5600 hold up
+5630 press a
+5695 release left
+5695 release up
+5700 poke 67A8 32
+5700 poke 67A9 00
+5700 hold left
+5700 hold down
+5730 press a
+5795 release left
+5795 release down
+5800 poke 6792 01
+5800 hold right
+5830 press a
+5895 release right
+5900 hold left
+5930 press a
+5995 release left
+6000 poke 67A8 32
+6000 poke 67A9 00
+6000 hold right
+6000 hold up
+6030 press a
+6095 release right
+6095 release up
+6100 hold right
+6100 hold down
+6130 press a
+6195 release right
+6195 release down
+6200 hold left
+6200 hold up
+6230 press a
+6295 release left
+6295 release up
+6300 poke 6792 01
+6300 poke 67A8 32
+6300 poke 67A9 00
+6300 hold left
+6300 hold down
+6330 press a
+6395 release left
+6395 release down
+6400 hold right
+6430 press a
+6495 release right
+6500 hold left
+6530 press a
+6595 release left
+6600 poke 67A8 32
+6600 poke 67A9 00
+6600 hold right
+6600 hold up
+6630 press a
+6695 release right
+6695 release up
+6700 hold right
+6700 hold down
+6730 press a
+6795 release right
+6795 release down
+6800 poke 6792 01
+6800 hold left
+6800 hold up
+6830 press a
+6895 release left
+6895 release up
+6900 poke 67A8 32
+6900 poke 67A9 00
+6900 hold left
+6900 hold down
+6930 press a
+6995 release left
+6995 release down
+7000 hold right
+7030 press a
+7095 release right
+7100 hold left
+7130 press a
+7195 release left
+7200 poke 67A8 32
+7200 poke 67A9 00
+7200 hold right
+7200 hold up
+7230 press a
+7295 release right
+7295 release up
+7300 poke 6792 01
+7300 hold right
+7300 hold down
+7330 press a
+7395 release right
+7395 release down
+7400 hold left
+7400 hold up
+7430 press a
+7495 release left
+7495 release up
+7500 poke 67A8 32
+7500 poke 67A9 00
+7500 hold left
+7500 hold down
+7530 press a
+7595 release left
+7595 release down
+7600 hold right
+7630 press a
+7695 release right
+7700 hold left
+7730 press a
+7795 release left
+7800 poke 6792 01
+7800 poke 67A8 32
+7800 poke 67A9 00
+7800 hold right
+7800 hold up
+7830 press a
+7895 release right
+7895 release up
+7900 hold right
+7900 hold down
+7930 press a
+7995 release right
+7995 release down
+8000 hold left
+8000 hold up
+8030 press a
+8095 release left
+8095 release up
+8100 poke 67A8 32
+8100 poke 67A9 00
+8100 hold left
+8100 hold down
+8130 press a
+8195 release left
+8195 release down
+8200 hold right
+8230 press a
+8295 release right
+8300 poke 6792 01
+8300 hold left
+8330 press a
+8395 release left
+8400 poke 67A8 32
+8400 poke 67A9 00
+8400 hold right
+8400 hold up
+8430 press a
+8495 release right
+8495 release up
+8500 hold right
+8500 hold down
+8530 press a
+8595 release right
+8595 release down
+8600 hold left
+8600 hold up
+8630 press a
+8695 release left
+8695 release up
+8700 poke 67A8 32
+8700 poke 67A9 00
+8700 hold left
+8700 hold down
+8730 press a
+8795 release left
+8795 release down
+8800 poke 6792 01
+8800 hold right
+8830 press a
+8895 release right
+8900 hold left
+8930 press a
+8995 release left
+9000 poke 67A8 32
+9000 poke 67A9 00
+9000 hold right
+9000 hold up
+9030 press a
+9095 release right
+9095 release up
+9100 hold right
+9100 hold down
+9130 press a
+9195 release right
+9195 release down
+9200 hold left
+9200 hold up
+9230 press a
+9295 release left
+9295 release up
+9300 poke 6792 01
+9300 poke 67A8 32
+9300 poke 67A9 00
+9300 hold left
+9300 hold down
+9330 press a
+9395 release left
+9395 release down
+9400 hold right
+9430 press a
+9495 release right
+9500 hold left
+9530 press a
+9595 release left
+9600 poke 67A8 32
+9600 poke 67A9 00
+9600 hold right
+9600 hold up
+9630 press a
+9695 release right
+9695 release up
+9700 hold right
+9700 hold down
+9730 press a
+9795 release right
+9795 release down
+9800 poke 6792 01
+9800 hold left
+9800 hold up
+9830 press a
+9895 release left
+9895 release up
+9900 poke 67A8 32
+9900 poke 67A9 00
+9900 hold left
+9900 hold down
+9930 press a
+9995 release left
+9995 release down
+10000 hold right
+10030 press a
+10095 release right
+10100 hold left
+10130 press a
+10195 release left
+10200 poke 67A8 32
+10200 poke 67A9 00
+10200 hold right
+10200 hold up
+10230 press a
+10295 release right
+10295 release up
+10300 poke 6792 01
+10300 hold right
+10300 hold down
+10330 press a
+10395 release right
+10395 release down
+10400 hold left
+10400 hold up
+10430 press a
+10495 release left
+10495 release up
+10500 poke 67A8 32
+10500 poke 67A9 00
+10500 hold left
+10500 hold down
+10530 press a
+10595 release left
+10595 release down
+10600 hold right
+10630 press a
+10695 release right
+10700 hold left
+10730 press a
+10795 release left
+10800 poke 6792 01
+10800 poke 67A8 32
+10800 poke 67A9 00
+10800 hold right
+10800 hold up
+10830 press a
+10895 release right
+10895 release up
+10900 hold right
+10900 hold down
+10930 press a
+10995 release right
+10995 release down
+11000 hold left
+11000 hold up
+11030 press a
+11095 release left
+11095 release up
+11100 poke 67A8 32
+11100 poke 67A9 00
+11100 hold left
+11100 hold down
+11130 press a
+11195 release left
+11195 release down
+11200 hold right
+11230 press a
+11295 release right
+11300 poke 6792 01
+11300 hold left
+11330 press a
+11395 release left
+11400 poke 67A8 32
+11400 poke 67A9 00
+11400 hold right
+11400 hold up
+11430 press a
+11495 release right
+11495 release up
+11500 hold right
+11500 hold down
+11530 press a
+11595 release right
+11595 release down
+11600 hold left
+11600 hold up
+11630 press a
+11695 release left
+11695 release up
+11700 poke 67A8 32
+11700 poke 67A9 00
+11700 hold left
+11700 hold down
+11730 press a
+11795 release left
+11795 release down
+11800 poke 6792 01
+11800 hold right
+11830 press a
+11895 release right
+11900 hold left
+11930 press a
+11995 release left
+12000 poke 67A8 32
+12000 poke 67A9 00
+12000 hold right
+12000 hold up
+12030 press a
+12095 release right
+12095 release up
+12100 hold right
+12100 hold down
+12130 press a
+12195 release right
+12195 release down
+12200 hold left
+12200 hold up
+12230 press a
+12295 release left
+12295 release up
+12300 poke 6792 01
+12300 poke 67A8 32
+12300 poke 67A9 00
+12300 hold left
+12300 hold down
+12330 press a
+12395 release left
+12395 release down
+12400 hold right
+12430 press a
+12495 release right
+12500 hold left
+12530 press a
+12595 release left
+12600 poke 67A8 32
+12600 poke 67A9 00
+12600 hold right
+12600 hold up
+12630 press a
+12695 release right
+12695 release up
+12700 hold right
+12700 hold down
+12730 press a
+12795 release right
+12795 release down
+12800 poke 6792 01
+12800 hold left
+12800 hold up
+12830 press a
+12895 release left
+12895 release up
+12900 poke 67A8 32
+12900 poke 67A9 00
+12900 hold left
+12900 hold down
+12930 press a
+12995 release left
+12995 release down
+13000 hold right
+13030 press a
+13095 release right
+13100 hold left
+13130 press a
+13195 release left
+13200 poke 67A8 32
+13200 poke 67A9 00
+13200 hold right
+13200 hold up
+13230 press a
+13295 release right
+13295 release up
+13300 poke 6792 01
+13300 hold right
+13300 hold down
+13330 press a
+13395 release right
+13395 release down
+13400 hold left
+13400 hold up
+13430 press a
+13495 release left
+13495 release up
+13500 poke 67A8 32
+13500 poke 67A9 00
+13500 hold left
+13500 hold down
+13530 press a
+13595 release left
+13595 release down
+13600 hold right
+13630 press a
+13695 release right
+13700 hold left
+13730 press a
+13795 release left
+13800 poke 6792 01
+13800 poke 67A8 32
+13800 poke 67A9 00
+13800 hold right
+13800 hold up
+13830 press a
+13895 release right
+13895 release up
+13900 hold right
+13900 hold down
+13930 press a
+13995 release right
+13995 release down
+14000 hold left
+14000 hold up
+14030 press a
+14095 release left
+14095 release up
+14100 poke 67A8 32
+14100 poke 67A9 00
+14100 hold left
+14100 hold down
+14130 press a
+14195 release left
+14195 release down
+14200 hold right
+14230 press a
+14295 release right
+14300 poke 6792 01
+14300 hold left
+14330 press a
+14395 release left
+14400 poke 67A8 32
+14400 poke 67A9 00
+14400 hold right
+14400 hold up
+14430 press a
+14495 release right
+14495 release up
+14500 hold right
+14500 hold down
+14530 press a
+14595 release right
+14595 release down
+14600 hold left
+14600 hold up
+14630 press a
+14695 release left
+14695 release up
+14700 poke 67A8 32
+14700 poke 67A9 00
+14700 hold left
+14700 hold down
+14730 press a
+14795 release left
+14795 release down
+14800 poke 6792 01
+14800 hold right
+14830 press a
+14895 release right
+14900 hold left
+14930 press a
+14995 release left
+15000 poke 67A8 32
+15000 poke 67A9 00
+15000 hold right
+15000 hold up
+15030 press a
+15095 release right
+15095 release up
+15100 hold right
+15100 hold down
+15130 press a
+15195 release right
+15195 release down
+15200 hold left
+15200 hold up
+15230 press a
+15295 release left
+15295 release up
+15300 poke 6792 01
+15300 poke 67A8 32
+15300 poke 67A9 00
+15300 hold left
+15300 hold down
+15330 press a
+15395 release left
+15395 release down
+15400 hold right
+15430 press a
+15495 release right
+15500 hold left
+15530 press a
+15595 release left
+15600 poke 67A8 32
+15600 poke 67A9 00
+15600 hold right
+15600 hold up
+15630 press a
+15695 release right
+15695 release up
+15700 hold right
+15700 hold down
+15730 press a
+15795 release right
+15795 release down
+15800 poke 6792 01
+15800 hold left
+15800 hold up
+15830 press a
+15895 release left
+15895 release up
+15900 poke 67A8 32
+15900 poke 67A9 00
+15900 hold left
+15900 hold down
+15930 press a
+15995 release left
+15995 release down
+16000 hold right
+16030 press a
+16095 release right
+16100 hold left
+16130 press a
+16195 release left
+16200 poke 67A8 32
+16200 poke 67A9 00
+16200 hold right
+16200 hold up
+16230 press a
+16295 release right
+16295 release up
+16300 poke 6792 01
+16300 hold right
+16300 hold down
+16330 press a
+16395 release right
+16395 release down
+16400 hold left
+16400 hold up
+16430 press a
+16495 release left
+16495 release up
+16500 poke 67A8 32
+16500 poke 67A9 00
+16500 hold left
+16500 hold down
+16530 press a
+16595 release left
+16595 release down
+16600 hold right
+16630 press a
+16695 release right
+16700 hold left
+16730 press a
+16795 release left
+16800 poke 6792 01
+16800 poke 67A8 32
+16800 poke 67A9 00
+16800 hold right
+16800 hold up
+16830 press a
+16895 release right
+16895 release up
+16900 hold right
+16900 hold down
+16930 press a
+16995 release right
+16995 release down
+17000 hold left
+17000 hold up
+17030 press a
+17095 release left
+17095 release up
+17100 poke 67A8 32
+17100 poke 67A9 00
+17100 hold left
+17100 hold down
+17130 press a
+17195 release left
+17195 release down
+17200 hold right
+17230 press a
+17295 release right
+17300 poke 6792 01
+17300 hold left
+17330 press a
+17395 release left
+17400 poke 67A8 32
+17400 poke 67A9 00
+17400 hold right
+17400 hold up
+17430 press a
+17495 release right
+17495 release up
+17500 hold right
+17500 hold down
+17530 press a
+17595 release right
+17595 release down
+17600 hold left
+17600 hold up
+17630 press a
+17695 release left
+17695 release up
+17700 poke 67A8 32
+17700 poke 67A9 00
+17700 hold left
+17700 hold down
+17730 press a
+17795 release left
+17795 release down
+17800 poke 6792 01
+17800 hold right
+17830 press a
+17895 release right
+17900 hold left
+17930 press a
+17995 release left
+18000 poke 67A8 32
+18000 poke 67A9 00
+18000 hold right
+18000 hold up
+18030 press a
+18095 release right
+18095 release up
+18100 hold right
+18100 hold down
+18130 press a
+18195 release right
+18195 release down
+18200 hold left
+18200 hold up
+18230 press a
+18295 release left
+18295 release up
+18300 poke 6792 01
+18300 poke 67A8 32
+18300 poke 67A9 00
+18300 hold left
+18300 hold down
+18330 press a
+18395 release left
+18395 release down
+18400 hold right
+18430 press a
+18495 release right
+18500 hold left
+18530 press a
+18595 release left
+18600 poke 67A8 32
+18600 poke 67A9 00
+18600 hold right
+18600 hold up
+18630 press a
+18695 release right
+18695 release up
+18700 hold right
+18700 hold down
+18730 press a
+18795 release right
+18795 release down
+18800 poke 6792 01
+18800 hold left
+18800 hold up
+18830 press a
+18895 release left
+18895 release up
+18900 poke 67A8 32
+18900 poke 67A9 00
+18900 hold left
+18900 hold down
+18930 press a
+18995 release left
+18995 release down
+19000 hold right
+19030 press a
+19095 release right
+19100 hold left
+19130 press a
+19195 release left
+19200 poke 67A8 32
+19200 poke 67A9 00
+19200 hold right
+19200 hold up
+19230 press a
+19295 release right
+19295 release up
+19300 poke 6792 01
+19300 hold right
+19300 hold down
+19330 press a
+19395 release right
+19395 release down
+19400 hold left
+19400 hold up
+19430 press a
+19495 release left
+19495 release up
+19500 poke 67A8 32
+19500 poke 67A9 00
+19500 hold left
+19500 hold down
+19530 press a
+19595 release left
+19595 release down
+19600 hold right
+19630 press a
+19695 release right
+19700 hold left
+19730 press a
+19795 release left
+19800 poke 6792 01
+19800 poke 67A8 32
+19800 poke 67A9 00
+19800 hold right
+19800 hold up
+19830 press a
+19895 release right
+19895 release up
+19900 hold right
+19900 hold down
+19930 press a
+19995 release right
+19995 release down
+20050 end

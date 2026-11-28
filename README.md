@@ -35,7 +35,14 @@ As of 2026-11-27:
 - [x] The BIOS's boot in C (console-decomp's `ngp/bios.h`): put in place of the BIOS at the hand-over
       (`ngpref --boot`), the console it leaves is the BIOS's in every register and byte the program reads, and
       the pictures, the sound and the program's bus are the same in every frame of both scenarios
-- [ ] The scenarios, the TLCS-900/H decoder, the coverage and the named data
+- [x] The scenarios (`tests/controls`, 54): the attract, the debug menu, the endings, every zone and act, every
+      act's star posts and one object of each kind in each act (`tools/object_scenarios.py`), every boss beaten and
+      its act ended, the special stage from an act's ring, the rooms (a time trial to its signpost and the ranking,
+      duel, puzzle, options), the true ending by play to its credits: 73.64% of the program's instructions run
+      (`tools/listing_coverage.py`), what never runs (mostly the link's screens) written down in `docs/plan.md`
+- [x] The TLCS-900/H decoder (console-decomp's `tlcs900/disassembler.py`): MAME's text and length at every offset of
+      the cartridge, of the BIOS and of an image of every opcode, with each instruction's operands and flow
+- [ ] The coverage and the named data
 - [ ] The translated program, then the decompiled C, the same as the reference in every frame
 
 ## Layout

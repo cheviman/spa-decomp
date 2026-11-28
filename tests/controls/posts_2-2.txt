@@ -1,0 +1,121 @@
+# Secret Plant act 2's star posts, from a console set up and off (--nvram build/setup.nv): the debug menu by the poke
+# at 499C (direction.txt), BEGINNING, act 2-2 picked in the level select (A at 810); for each of the act's star posts
+# (the object layout's object 0D: its number, place and second parameter), the lives poked to 5, the star post's
+# variables (67D4-67DB) as if it had been touched and the player's Y under 64 for 4 frames, the level's pit: a life
+# lost, the player starts again at the star post and runs right with jumps for 400 frames. The star posts: 0 at
+# 320,960 (1110), 3 at 2360,736 (1910), 5 at 3872,1072 (2710), 7 at 4808,800 (3510)
+600 poke 499C DB
+650 press a
+700 press down
+730 press down
+760 press down
+810 press a
+1110 poke 67AF 05
+1110 poke 67D4 40
+1110 poke 67D5 01
+1110 poke 67D6 CD
+1110 poke 67D7 03
+1110 poke 67DB 00
+1110 poke 67DA 01
+1110 poke 671E 20
+1110 poke 671F 00
+1111 poke 671E 20
+1111 poke 671F 00
+1112 poke 671E 20
+1112 poke 671F 00
+1113 poke 671E 20
+1113 poke 671F 00
+1490 hold right
+1500 press a
+1540 press a
+1580 press a
+1620 press a
+1660 press a
+1700 press a
+1740 press a
+1780 press a
+1820 press a
+1860 press a
+1890 release right
+1910 poke 67AF 05
+1910 poke 67D4 38
+1910 poke 67D5 09
+1910 poke 67D6 ED
+1910 poke 67D7 02
+1910 poke 67DB 03
+1910 poke 67DA 00
+1910 poke 671E 20
+1910 poke 671F 00
+1911 poke 671E 20
+1911 poke 671F 00
+1912 poke 671E 20
+1912 poke 671F 00
+1913 poke 671E 20
+1913 poke 671F 00
+2290 hold right
+2300 press a
+2340 press a
+2380 press a
+2420 press a
+2460 press a
+2500 press a
+2540 press a
+2580 press a
+2620 press a
+2660 press a
+2690 release right
+2710 poke 67AF 05
+2710 poke 67D4 20
+2710 poke 67D5 0F
+2710 poke 67D6 3D
+2710 poke 67D7 04
+2710 poke 67DB 05
+2710 poke 67DA 00
+2710 poke 671E 20
+2710 poke 671F 00
+2711 poke 671E 20
+2711 poke 671F 00
+2712 poke 671E 20
+2712 poke 671F 00
+2713 poke 671E 20
+2713 poke 671F 00
+3090 hold right
+3100 press a
+3140 press a
+3180 press a
+3220 press a
+3260 press a
+3300 press a
+3340 press a
+3380 press a
+3420 press a
+3460 press a
+3490 release right
+3510 poke 67AF 05
+3510 poke 67D4 C8
+3510 poke 67D5 12
+3510 poke 67D6 2D
+3510 poke 67D7 03
+3510 poke 67DB 07
+3510 poke 67DA 00
+3510 poke 671E 20
+3510 poke 671F 00
+3511 poke 671E 20
+3511 poke 671F 00
+3512 poke 671E 20
+3512 poke 671F 00
+3513 poke 671E 20
+3513 poke 671F 00
+3890 hold right
+3900 press a
+3940 press a
+3980 press a
+4020 press a
+4060 press a
+4100 press a
+4140 press a
+4180 press a
+4220 press a
+4260 press a
+4290 release right
+4310 end

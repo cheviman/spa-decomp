@@ -1,0 +1,895 @@
+# Cosmic Casino act 2 (level 05), from a console set up and off (--nvram build/setup.nv): the debug menu by the poke
+# at 499C, BEGINNING, act 3-2 picked in the level select (A at 870); for each point the lives poked to 5, the star
+# post's variables (67D4-67DB) as if a star post past the act's own had been touched (67DB 10) 80 pixels before the
+# object, and the player's Y under 64 for 4 frames, the level's pit: a life lost, the player starts again there and
+# runs right, left, right and left around the object, 100 frames each with three jumps. The points, the object's ID at
+# its place (the frame): 0C at 248,1432 (1170), 05 at 304,392 (1970), 4D at 508,795 (2770), 0B at 512,1353 (3570), 03
+# at 608,552 (4370), 30 at 648,1000 (5170), 35 at 696,304 (5970), 33 at 756,508 (6770), 4C at 799,696 (7570), 00 at
+# 944,1392 (8370), 31 at 960,1000 (9170), 4B at 968,815 (9970), 2F at 1040,1399 (10770), 2E at 1248,1391 (11570), 15
+# at 1436,620 (12370), 49 at 1516,444 (13170), 34 at 1576,1160 (13970), 32 at 2084,304 (14770), 6F at 2368,568
+# (15570), 4A at 2856,960 (16370), 01 at 3032,1544 (17170), 67 at 3152,816 (17970), 12 at 4960,840 (18770), 11 at
+# 5232,672 (19570), 0F at 5360,88 (20370)
+600 poke 499C DB
+650 press a
+700 press down
+730 press down
+760 press down
+790 press down
+820 press down
+870 press a
+1170 poke 67AF 05
+1170 poke 67D4 A8
+1170 poke 67D5 00
+1170 poke 67D6 A5
+1170 poke 67D7 05
+1170 poke 67DB 10
+1170 poke 67DA 00
+1170 poke 671E 20
+1170 poke 671F 00
+1171 poke 671E 20
+1171 poke 671F 00
+1172 poke 671E 20
+1172 poke 671F 00
+1173 poke 671E 20
+1173 poke 671F 00
+1550 hold right
+1560 press a
+1600 press a
+1640 press a
+1645 release right
+1650 hold left
+1660 press a
+1700 press a
+1740 press a
+1745 release left
+1750 hold right
+1760 press a
+1800 press a
+1840 press a
+1845 release right
+1850 hold left
+1860 press a
+1900 press a
+1940 press a
+1945 release left
+1970 poke 67AF 05
+1970 poke 67D4 E0
+1970 poke 67D5 00
+1970 poke 67D6 95
+1970 poke 67D7 01
+1970 poke 67DB 10
+1970 poke 67DA 00
+1970 poke 671E 20
+1970 poke 671F 00
+1971 poke 671E 20
+1971 poke 671F 00
+1972 poke 671E 20
+1972 poke 671F 00
+1973 poke 671E 20
+1973 poke 671F 00
+2350 hold right
+2360 press a
+2400 press a
+2440 press a
+2445 release right
+2450 hold left
+2460 press a
+2500 press a
+2540 press a
+2545 release left
+2550 hold right
+2560 press a
+2600 press a
+2640 press a
+2645 release right
+2650 hold left
+2660 press a
+2700 press a
+2740 press a
+2745 release left
+2770 poke 67AF 05
+2770 poke 67D4 AC
+2770 poke 67D5 01
+2770 poke 67D6 28
+2770 poke 67D7 03
+2770 poke 67DB 10
+2770 poke 67DA 00
+2770 poke 671E 20
+2770 poke 671F 00
+2771 poke 671E 20
+2771 poke 671F 00
+2772 poke 671E 20
+2772 poke 671F 00
+2773 poke 671E 20
+2773 poke 671F 00
+3150 hold right
+3160 press a
+3200 press a
+3240 press a
+3245 release right
+3250 hold left
+3260 press a
+3300 press a
+3340 press a
+3345 release left
+3350 hold right
+3360 press a
+3400 press a
+3440 press a
+3445 release right
+3450 hold left
+3460 press a
+3500 press a
+3540 press a
+3545 release left
+3570 poke 67AF 05
+3570 poke 67D4 B0
+3570 poke 67D5 01
+3570 poke 67D6 56
+3570 poke 67D7 05
+3570 poke 67DB 10
+3570 poke 67DA 00
+3570 poke 671E 20
+3570 poke 671F 00
+3571 poke 671E 20
+3571 poke 671F 00
+3572 poke 671E 20
+3572 poke 671F 00
+3573 poke 671E 20
+3573 poke 671F 00
+3950 hold right
+3960 press a
+4000 press a
+4040 press a
+4045 release right
+4050 hold left
+4060 press a
+4100 press a
+4140 press a
+4145 release left
+4150 hold right
+4160 press a
+4200 press a
+4240 press a
+4245 release right
+4250 hold left
+4260 press a
+4300 press a
+4340 press a
+4345 release left
+4370 poke 67AF 05
+4370 poke 67D4 10
+4370 poke 67D5 02
+4370 poke 67D6 35
+4370 poke 67D7 02
+4370 poke 67DB 10
+4370 poke 67DA 00
+4370 poke 671E 20
+4370 poke 671F 00
+4371 poke 671E 20
+4371 poke 671F 00
+4372 poke 671E 20
+4372 poke 671F 00
+4373 poke 671E 20
+4373 poke 671F 00
+4750 hold right
+4760 press a
+4800 press a
+4840 press a
+4845 release right
+4850 hold left
+4860 press a
+4900 press a
+4940 press a
+4945 release left
+4950 hold right
+4960 press a
+5000 press a
+5040 press a
+5045 release right
+5050 hold left
+5060 press a
+5100 press a
+5140 press a
+5145 release left
+5170 poke 67AF 05
+5170 poke 67D4 38
+5170 poke 67D5 02
+5170 poke 67D6 F5
+5170 poke 67D7 03
+5170 poke 67DB 10
+5170 poke 67DA 00
+5170 poke 671E 20
+5170 poke 671F 00
+5171 poke 671E 20
+5171 poke 671F 00
+5172 poke 671E 20
+5172 poke 671F 00
+5173 poke 671E 20
+5173 poke 671F 00
+5550 hold right
+5560 press a
+5600 press a
+5640 press a
+5645 release right
+5650 hold left
+5660 press a
+5700 press a
+5740 press a
+5745 release left
+5750 hold right
+5760 press a
+5800 press a
+5840 press a
+5845 release right
+5850 hold left
+5860 press a
+5900 press a
+5940 press a
+5945 release left
+5970 poke 67AF 05
+5970 poke 67D4 68
+5970 poke 67D5 02
+5970 poke 67D6 3D
+5970 poke 67D7 01
+5970 poke 67DB 10
+5970 poke 67DA 00
+5970 poke 671E 20
+5970 poke 671F 00
+5971 poke 671E 20
+5971 poke 671F 00
+5972 poke 671E 20
+5972 poke 671F 00
+5973 poke 671E 20
+5973 poke 671F 00
+6350 hold right
+6360 press a
+6400 press a
+6440 press a
+6445 release right
+6450 hold left
+6460 press a
+6500 press a
+6540 press a
+6545 release left
+6550 hold right
+6560 press a
+6600 press a
+6640 press a
+6645 release right
+6650 hold left
+6660 press a
+6700 press a
+6740 press a
+6745 release left
+6770 poke 67AF 05
+6770 poke 67D4 A4
+6770 poke 67D5 02
+6770 poke 67D6 09
+6770 poke 67D7 02
+6770 poke 67DB 10
+6770 poke 67DA 00
+6770 poke 671E 20
+6770 poke 671F 00
+6771 poke 671E 20
+6771 poke 671F 00
+6772 poke 671E 20
+6772 poke 671F 00
+6773 poke 671E 20
+6773 poke 671F 00
+7150 hold right
+7160 press a
+7200 press a
+7240 press a
+7245 release right
+7250 hold left
+7260 press a
+7300 press a
+7340 press a
+7345 release left
+7350 hold right
+7360 press a
+7400 press a
+7440 press a
+7445 release right
+7450 hold left
+7460 press a
+7500 press a
+7540 press a
+7545 release left
+7570 poke 67AF 05
+7570 poke 67D4 CF
+7570 poke 67D5 02
+7570 poke 67D6 C5
+7570 poke 67D7 02
+7570 poke 67DB 10
+7570 poke 67DA 00
+7570 poke 671E 20
+7570 poke 671F 00
+7571 poke 671E 20
+7571 poke 671F 00
+7572 poke 671E 20
+7572 poke 671F 00
+7573 poke 671E 20
+7573 poke 671F 00
+7950 hold right
+7960 press a
+8000 press a
+8040 press a
+8045 release right
+8050 hold left
+8060 press a
+8100 press a
+8140 press a
+8145 release left
+8150 hold right
+8160 press a
+8200 press a
+8240 press a
+8245 release right
+8250 hold left
+8260 press a
+8300 press a
+8340 press a
+8345 release left
+8370 poke 67AF 05
+8370 poke 67D4 60
+8370 poke 67D5 03
+8370 poke 67D6 7D
+8370 poke 67D7 05
+8370 poke 67DB 10
+8370 poke 67DA 00
+8370 poke 671E 20
+8370 poke 671F 00
+8371 poke 671E 20
+8371 poke 671F 00
+8372 poke 671E 20
+8372 poke 671F 00
+8373 poke 671E 20
+8373 poke 671F 00
+8750 hold right
+8760 press a
+8800 press a
+8840 press a
+8845 release right
+8850 hold left
+8860 press a
+8900 press a
+8940 press a
+8945 release left
+8950 hold right
+8960 press a
+9000 press a
+9040 press a
+9045 release right
+9050 hold left
+9060 press a
+9100 press a
+9140 press a
+9145 release left
+9170 poke 67AF 05
+9170 poke 67D4 70
+9170 poke 67D5 03
+9170 poke 67D6 F5
+9170 poke 67D7 03
+9170 poke 67DB 10
+9170 poke 67DA 00
+9170 poke 671E 20
+9170 poke 671F 00
+9171 poke 671E 20
+9171 poke 671F 00
+9172 poke 671E 20
+9172 poke 671F 00
+9173 poke 671E 20
+9173 poke 671F 00
+9550 hold right
+9560 press a
+9600 press a
+9640 press a
+9645 release right
+9650 hold left
+9660 press a
+9700 press a
+9740 press a
+9745 release left
+9750 hold right
+9760 press a
+9800 press a
+9840 press a
+9845 release right
+9850 hold left
+9860 press a
+9900 press a
+9940 press a
+9945 release left
+9970 poke 67AF 05
+9970 poke 67D4 78
+9970 poke 67D5 03
+9970 poke 67D6 3C
+9970 poke 67D7 03
+9970 poke 67DB 10
+9970 poke 67DA 00
+9970 poke 671E 20
+9970 poke 671F 00
+9971 poke 671E 20
+9971 poke 671F 00
+9972 poke 671E 20
+9972 poke 671F 00
+9973 poke 671E 20
+9973 poke 671F 00
+10350 hold right
+10360 press a
+10400 press a
+10440 press a
+10445 release right
+10450 hold left
+10460 press a
+10500 press a
+10540 press a
+10545 release left
+10550 hold right
+10560 press a
+10600 press a
+10640 press a
+10645 release right
+10650 hold left
+10660 press a
+10700 press a
+10740 press a
+10745 release left
+10770 poke 67AF 05
+10770 poke 67D4 C0
+10770 poke 67D5 03
+10770 poke 67D6 84
+10770 poke 67D7 05
+10770 poke 67DB 10
+10770 poke 67DA 00
+10770 poke 671E 20
+10770 poke 671F 00
+10771 poke 671E 20
+10771 poke 671F 00
+10772 poke 671E 20
+10772 poke 671F 00
+10773 poke 671E 20
+10773 poke 671F 00
+11150 hold right
+11160 press a
+11200 press a
+11240 press a
+11245 release right
+11250 hold left
+11260 press a
+11300 press a
+11340 press a
+11345 release left
+11350 hold right
+11360 press a
+11400 press a
+11440 press a
+11445 release right
+11450 hold left
+11460 press a
+11500 press a
+11540 press a
+11545 release left
+11570 poke 67AF 05
+11570 poke 67D4 90
+11570 poke 67D5 04
+11570 poke 67D6 7C
+11570 poke 67D7 05
+11570 poke 67DB 10
+11570 poke 67DA 00
+11570 poke 671E 20
+11570 poke 671F 00
+11571 poke 671E 20
+11571 poke 671F 00
+11572 poke 671E 20
+11572 poke 671F 00
+11573 poke 671E 20
+11573 poke 671F 00
+11950 hold right
+11960 press a
+12000 press a
+12040 press a
+12045 release right
+12050 hold left
+12060 press a
+12100 press a
+12140 press a
+12145 release left
+12150 hold right
+12160 press a
+12200 press a
+12240 press a
+12245 release right
+12250 hold left
+12260 press a
+12300 press a
+12340 press a
+12345 release left
+12370 poke 67AF 05
+12370 poke 67D4 4C
+12370 poke 67D5 05
+12370 poke 67D6 79
+12370 poke 67D7 02
+12370 poke 67DB 10
+12370 poke 67DA 00
+12370 poke 671E 20
+12370 poke 671F 00
+12371 poke 671E 20
+12371 poke 671F 00
+12372 poke 671E 20
+12372 poke 671F 00
+12373 poke 671E 20
+12373 poke 671F 00
+12750 hold right
+12760 press a
+12800 press a
+12840 press a
+12845 release right
+12850 hold left
+12860 press a
+12900 press a
+12940 press a
+12945 release left
+12950 hold right
+12960 press a
+13000 press a
+13040 press a
+13045 release right
+13050 hold left
+13060 press a
+13100 press a
+13140 press a
+13145 release left
+13170 poke 67AF 05
+13170 poke 67D4 9C
+13170 poke 67D5 05
+13170 poke 67D6 C9
+13170 poke 67D7 01
+13170 poke 67DB 10
+13170 poke 67DA 00
+13170 poke 671E 20
+13170 poke 671F 00
+13171 poke 671E 20
+13171 poke 671F 00
+13172 poke 671E 20
+13172 poke 671F 00
+13173 poke 671E 20
+13173 poke 671F 00
+13550 hold right
+13560 press a
+13600 press a
+13640 press a
+13645 release right
+13650 hold left
+13660 press a
+13700 press a
+13740 press a
+13745 release left
+13750 hold right
+13760 press a
+13800 press a
+13840 press a
+13845 release right
+13850 hold left
+13860 press a
+13900 press a
+13940 press a
+13945 release left
+13970 poke 67AF 05
+13970 poke 67D4 D8
+13970 poke 67D5 05
+13970 poke 67D6 95
+13970 poke 67D7 04
+13970 poke 67DB 10
+13970 poke 67DA 00
+13970 poke 671E 20
+13970 poke 671F 00
+13971 poke 671E 20
+13971 poke 671F 00
+13972 poke 671E 20
+13972 poke 671F 00
+13973 poke 671E 20
+13973 poke 671F 00
+14350 hold right
+14360 press a
+14400 press a
+14440 press a
+14445 release right
+14450 hold left
+14460 press a
+14500 press a
+14540 press a
+14545 release left
+14550 hold right
+14560 press a
+14600 press a
+14640 press a
+14645 release right
+14650 hold left
+14660 press a
+14700 press a
+14740 press a
+14745 release left
+14770 poke 67AF 05
+14770 poke 67D4 D4
+14770 poke 67D5 07
+14770 poke 67D6 3D
+14770 poke 67D7 01
+14770 poke 67DB 10
+14770 poke 67DA 00
+14770 poke 671E 20
+14770 poke 671F 00
+14771 poke 671E 20
+14771 poke 671F 00
+14772 poke 671E 20
+14772 poke 671F 00
+14773 poke 671E 20
+14773 poke 671F 00
+15150 hold right
+15160 press a
+15200 press a
+15240 press a
+15245 release right
+15250 hold left
+15260 press a
+15300 press a
+15340 press a
+15345 release left
+15350 hold right
+15360 press a
+15400 press a
+15440 press a
+15445 release right
+15450 hold left
+15460 press a
+15500 press a
+15540 press a
+15545 release left
+15570 poke 67AF 05
+15570 poke 67D4 F0
+15570 poke 67D5 08
+15570 poke 67D6 45
+15570 poke 67D7 02
+15570 poke 67DB 10
+15570 poke 67DA 00
+15570 poke 671E 20
+15570 poke 671F 00
+15571 poke 671E 20
+15571 poke 671F 00
+15572 poke 671E 20
+15572 poke 671F 00
+15573 poke 671E 20
+15573 poke 671F 00
+15950 hold right
+15960 press a
+16000 press a
+16040 press a
+16045 release right
+16050 hold left
+16060 press a
+16100 press a
+16140 press a
+16145 release left
+16150 hold right
+16160 press a
+16200 press a
+16240 press a
+16245 release right
+16250 hold left
+16260 press a
+16300 press a
+16340 press a
+16345 release left
+16370 poke 67AF 05
+16370 poke 67D4 D8
+16370 poke 67D5 0A
+16370 poke 67D6 CD
+16370 poke 67D7 03
+16370 poke 67DB 10
+16370 poke 67DA 00
+16370 poke 671E 20
+16370 poke 671F 00
+16371 poke 671E 20
+16371 poke 671F 00
+16372 poke 671E 20
+16372 poke 671F 00
+16373 poke 671E 20
+16373 poke 671F 00
+16750 hold right
+16760 press a
+16800 press a
+16840 press a
+16845 release right
+16850 hold left
+16860 press a
+16900 press a
+16940 press a
+16945 release left
+16950 hold right
+16960 press a
+17000 press a
+17040 press a
+17045 release right
+17050 hold left
+17060 press a
+17100 press a
+17140 press a
+17145 release left
+17170 poke 67AF 05
+17170 poke 67D4 88
+17170 poke 67D5 0B
+17170 poke 67D6 15
+17170 poke 67D7 06
+17170 poke 67DB 10
+17170 poke 67DA 00
+17170 poke 671E 20
+17170 poke 671F 00
+17171 poke 671E 20
+17171 poke 671F 00
+17172 poke 671E 20
+17172 poke 671F 00
+17173 poke 671E 20
+17173 poke 671F 00
+17550 hold right
+17560 press a
+17600 press a
+17640 press a
+17645 release right
+17650 hold left
+17660 press a
+17700 press a
+17740 press a
+17745 release left
+17750 hold right
+17760 press a
+17800 press a
+17840 press a
+17845 release right
+17850 hold left
+17860 press a
+17900 press a
+17940 press a
+17945 release left
+17970 poke 67AF 05
+17970 poke 67D4 00
+17970 poke 67D5 0C
+17970 poke 67D6 3D
+17970 poke 67D7 03
+17970 poke 67DB 10
+17970 poke 67DA 00
+17970 poke 671E 20
+17970 poke 671F 00
+17971 poke 671E 20
+17971 poke 671F 00
+17972 poke 671E 20
+17972 poke 671F 00
+17973 poke 671E 20
+17973 poke 671F 00
+18350 hold right
+18360 press a
+18400 press a
+18440 press a
+18445 release right
+18450 hold left
+18460 press a
+18500 press a
+18540 press a
+18545 release left
+18550 hold right
+18560 press a
+18600 press a
+18640 press a
+18645 release right
+18650 hold left
+18660 press a
+18700 press a
+18740 press a
+18745 release left
+18770 poke 67AF 05
+18770 poke 67D4 10
+18770 poke 67D5 13
+18770 poke 67D6 55
+18770 poke 67D7 03
+18770 poke 67DB 10
+18770 poke 67DA 00
+18770 poke 671E 20
+18770 poke 671F 00
+18771 poke 671E 20
+18771 poke 671F 00
+18772 poke 671E 20
+18772 poke 671F 00
+18773 poke 671E 20
+18773 poke 671F 00
+19150 hold right
+19160 press a
+19200 press a
+19240 press a
+19245 release right
+19250 hold left
+19260 press a
+19300 press a
+19340 press a
+19345 release left
+19350 hold right
+19360 press a
+19400 press a
+19440 press a
+19445 release right
+19450 hold left
+19460 press a
+19500 press a
+19540 press a
+19545 release left
+19570 poke 67AF 05
+19570 poke 67D4 20
+19570 poke 67D5 14
+19570 poke 67D6 AD
+19570 poke 67D7 02
+19570 poke 67DB 10
+19570 poke 67DA 00
+19570 poke 671E 20
+19570 poke 671F 00
+19571 poke 671E 20
+19571 poke 671F 00
+19572 poke 671E 20
+19572 poke 671F 00
+19573 poke 671E 20
+19573 poke 671F 00
+19950 hold right
+19960 press a
+20000 press a
+20040 press a
+20045 release right
+20050 hold left
+20060 press a
+20100 press a
+20140 press a
+20145 release left
+20150 hold right
+20160 press a
+20200 press a
+20240 press a
+20245 release right
+20250 hold left
+20260 press a
+20300 press a
+20340 press a
+20345 release left
+20370 poke 67AF 05
+20370 poke 67D4 A0
+20370 poke 67D5 14
+20370 poke 67D6 65
+20370 poke 67D7 00
+20370 poke 67DB 10
+20370 poke 67DA 00
+20370 poke 671E 20
+20370 poke 671F 00
+20371 poke 671E 20
+20371 poke 671F 00
+20372 poke 671E 20
+20372 poke 671F 00
+20373 poke 671E 20
+20373 poke 671F 00
+20750 hold right
+20760 press a
+20800 press a
+20840 press a
+20845 release right
+20850 hold left
+20860 press a
+20900 press a
+20940 press a
+20945 release left
+20950 hold right
+20960 press a
+21000 press a
+21040 press a
+21045 release right
+21050 hold left
+21060 press a
+21100 press a
+21140 press a
+21145 release left
+21270 end

@@ -1,0 +1,100 @@
+# Aerobase act 2's star posts, from a console set up and off (--nvram build/setup.nv): the debug menu by the poke at
+# 499C (direction.txt), BEGINNING, act 5-2 picked in the level select (A at 990); for each of the act's star posts
+# (the object layout's object 0D: its number, place and second parameter), the lives poked to 5, the star post's
+# variables (67D4-67DB) as if it had been touched and the player's Y under 64 for 4 frames, the level's pit: a life
+# lost, the player starts again at the star post and runs right with jumps for 400 frames. The star posts: 0 at
+# 1432,656 (1290), 1 at 2112,1192 (2090), 2 at 4304,928 (2890)
+600 poke 499C DB
+650 press a
+700 press down
+730 press down
+760 press down
+790 press down
+820 press down
+850 press down
+880 press down
+910 press down
+940 press down
+990 press a
+1290 poke 67AF 05
+1290 poke 67D4 98
+1290 poke 67D5 05
+1290 poke 67D6 9D
+1290 poke 67D7 02
+1290 poke 67DB 00
+1290 poke 67DA 01
+1290 poke 671E 20
+1290 poke 671F 00
+1291 poke 671E 20
+1291 poke 671F 00
+1292 poke 671E 20
+1292 poke 671F 00
+1293 poke 671E 20
+1293 poke 671F 00
+1670 hold right
+1680 press a
+1720 press a
+1760 press a
+1800 press a
+1840 press a
+1880 press a
+1920 press a
+1960 press a
+2000 press a
+2040 press a
+2070 release right
+2090 poke 67AF 05
+2090 poke 67D4 40
+2090 poke 67D5 08
+2090 poke 67D6 B5
+2090 poke 67D7 04
+2090 poke 67DB 01
+2090 poke 67DA 00
+2090 poke 671E 20
+2090 poke 671F 00
+2091 poke 671E 20
+2091 poke 671F 00
+2092 poke 671E 20
+2092 poke 671F 00
+2093 poke 671E 20
+2093 poke 671F 00
+2470 hold right
+2480 press a
+2520 press a
+2560 press a
+2600 press a
+2640 press a
+2680 press a
+2720 press a
+2760 press a
+2800 press a
+2840 press a
+2870 release right
+2890 poke 67AF 05
+2890 poke 67D4 D0
+2890 poke 67D5 10
+2890 poke 67D6 AD
+2890 poke 67D7 03
+2890 poke 67DB 02
+2890 poke 67DA 01
+2890 poke 671E 20
+2890 poke 671F 00
+2891 poke 671E 20
+2891 poke 671F 00
+2892 poke 671E 20
+2892 poke 671F 00
+2893 poke 671E 20
+2893 poke 671F 00
+3270 hold right
+3280 press a
+3320 press a
+3360 press a
+3400 press a
+3440 press a
+3480 press a
+3520 press a
+3560 press a
+3600 press a
+3640 press a
+3670 release right
+3690 end

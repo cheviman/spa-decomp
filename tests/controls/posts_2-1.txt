@@ -1,0 +1,93 @@
+# Secret Plant act 1's star posts, from a console set up and off (--nvram build/setup.nv): the debug menu by the poke
+# at 499C (direction.txt), BEGINNING, act 2-1 picked in the level select (A at 780); for each of the act's star posts
+# (the object layout's object 0D: its number, place and second parameter), the lives poked to 5, the star post's
+# variables (67D4-67DB) as if it had been touched and the player's Y under 64 for 4 frames, the level's pit: a life
+# lost, the player starts again at the star post and runs right with jumps for 400 frames. The star posts: 0 at
+# 2240,1424 (1080), 1 at 2536,1528 (1880), 3 at 2952,944 (2680)
+600 poke 499C DB
+650 press a
+700 press down
+730 press down
+780 press a
+1080 poke 67AF 05
+1080 poke 67D4 C0
+1080 poke 67D5 08
+1080 poke 67D6 9D
+1080 poke 67D7 05
+1080 poke 67DB 00
+1080 poke 67DA 00
+1080 poke 671E 20
+1080 poke 671F 00
+1081 poke 671E 20
+1081 poke 671F 00
+1082 poke 671E 20
+1082 poke 671F 00
+1083 poke 671E 20
+1083 poke 671F 00
+1460 hold right
+1470 press a
+1510 press a
+1550 press a
+1590 press a
+1630 press a
+1670 press a
+1710 press a
+1750 press a
+1790 press a
+1830 press a
+1860 release right
+1880 poke 67AF 05
+1880 poke 67D4 E8
+1880 poke 67D5 09
+1880 poke 67D6 05
+1880 poke 67D7 06
+1880 poke 67DB 01
+1880 poke 67DA 00
+1880 poke 671E 20
+1880 poke 671F 00
+1881 poke 671E 20
+1881 poke 671F 00
+1882 poke 671E 20
+1882 poke 671F 00
+1883 poke 671E 20
+1883 poke 671F 00
+2260 hold right
+2270 press a
+2310 press a
+2350 press a
+2390 press a
+2430 press a
+2470 press a
+2510 press a
+2550 press a
+2590 press a
+2630 press a
+2660 release right
+2680 poke 67AF 05
+2680 poke 67D4 88
+2680 poke 67D5 0B
+2680 poke 67D6 BD
+2680 poke 67D7 03
+2680 poke 67DB 03
+2680 poke 67DA 00
+2680 poke 671E 20
+2680 poke 671F 00
+2681 poke 671E 20
+2681 poke 671F 00
+2682 poke 671E 20
+2682 poke 671F 00
+2683 poke 671E 20
+2683 poke 671F 00
+3060 hold right
+3070 press a
+3110 press a
+3150 press a
+3190 press a
+3230 press a
+3270 press a
+3310 press a
+3350 press a
+3390 press a
+3430 press a
+3460 release right
+3480 end

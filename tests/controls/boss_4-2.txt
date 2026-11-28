@@ -1,0 +1,477 @@
+# Aquatic Relics act 2's boss, Knuckles (level 07), from a console set up and off (--nvram build/setup.nv): the debug
+# menu by the poke at 499C, BEGINNING, act 4-2 picked in the level select (A at 930); at 1230 the lives poked to 5,
+# the star post 3 of the act (6192,944, posts_4-2's) as touched and the pit: the player starts again before the arena
+# (from 250 pixels before the boss, 6086,837, he falls to the pit every time); the air (67AC) poked to 0700h every 200
+# frames; at 1530 MUTEKI on, right and left with jumps. Knuckles counts his hits at +3Ah (Opts_BossHitCnt) and takes
+# one by play; at 2800, his object at 4442, the count poked to 0 and his routine to loc_3D2172, his hit's: the hit
+# sound, the count found run out, loc_3D2277: SONIC GOT THROUGH, Knuckles' scene with Eggman (KnuxCutscn_Main,
+# KnuxCutscn_Egg), and Sky Chase
+600 poke 499C DB
+650 press a
+700 press down
+730 press down
+760 press down
+790 press down
+820 press down
+850 press down
+880 press down
+930 press a
+1230 poke 67AF 05
+1230 poke 67D4 30
+1230 poke 67D5 18
+1230 poke 67D6 BD
+1230 poke 67D7 03
+1230 poke 67DB 03
+1230 poke 67DA 00
+1230 poke 671E 20
+1230 poke 671F 00
+1231 poke 671E 20
+1231 poke 671F 00
+1232 poke 671E 20
+1232 poke 671F 00
+1233 poke 671E 20
+1233 poke 671F 00
+1300 poke 67AC 00
+1300 poke 67AD 07
+1500 poke 67AC 00
+1500 poke 67AD 07
+1530 poke 67C0 01
+1530 poke 67AF 05
+1530 hold right
+1535 press a
+1565 press a
+1595 press a
+1625 press a
+1655 press a
+1685 press a
+1700 poke 67AC 00
+1700 poke 67AD 07
+1715 press a
+1745 press a
+1775 press a
+1805 press a
+1830 release right
+1840 hold left
+1845 press a
+1875 press a
+1900 poke 67AC 00
+1900 poke 67AD 07
+1905 press a
+1935 press a
+1960 release left
+1965 hold right
+1970 press a
+2000 press a
+2030 press a
+2060 press a
+2085 release right
+2090 hold left
+2095 press a
+2100 poke 67AC 00
+2100 poke 67AD 07
+2125 press a
+2155 press a
+2185 press a
+2210 release left
+2215 hold right
+2220 press a
+2250 press a
+2280 press a
+2300 poke 67AC 00
+2300 poke 67AD 07
+2310 press a
+2335 release right
+2340 hold left
+2345 press a
+2375 press a
+2405 press a
+2435 press a
+2460 release left
+2465 hold right
+2470 press a
+2500 press a
+2500 poke 67AC 00
+2500 poke 67AD 07
+2530 press a
+2560 press a
+2585 release right
+2590 hold left
+2595 press a
+2625 press a
+2655 press a
+2685 press a
+2700 poke 67AC 00
+2700 poke 67AD 07
+2710 release left
+2715 hold right
+2720 press a
+2750 press a
+2780 press a
+2800 poke 447C 00
+2800 poke 4442 72
+2800 poke 4443 21
+2800 poke 4444 3D
+2800 poke 4445 00
+2810 press a
+2835 release right
+2840 hold left
+2845 press a
+2875 press a
+2900 poke 67AC 00
+2900 poke 67AD 07
+2905 press a
+2935 press a
+2960 release left
+2965 hold right
+2970 press a
+3000 press a
+3030 press a
+3060 press a
+3085 release right
+3090 hold left
+3095 press a
+3100 poke 67AC 00
+3100 poke 67AD 07
+3125 press a
+3155 press a
+3185 press a
+3210 release left
+3215 hold right
+3220 press a
+3250 press a
+3280 press a
+3300 poke 67AC 00
+3300 poke 67AD 07
+3310 press a
+3335 release right
+3340 hold left
+3345 press a
+3375 press a
+3405 press a
+3435 press a
+3460 release left
+3465 hold right
+3470 press a
+3500 press a
+3500 poke 67AC 00
+3500 poke 67AD 07
+3530 press a
+3560 press a
+3585 release right
+3590 hold left
+3595 press a
+3625 press a
+3655 press a
+3685 press a
+3700 poke 67AC 00
+3700 poke 67AD 07
+3710 release left
+3715 hold right
+3720 press a
+3750 press a
+3780 press a
+3810 press a
+3835 release right
+3840 hold left
+3845 press a
+3875 press a
+3900 poke 67AC 00
+3900 poke 67AD 07
+3905 press a
+3935 press a
+3960 release left
+3965 hold right
+3970 press a
+4000 press a
+4030 press a
+4060 press a
+4085 release right
+4090 hold left
+4095 press a
+4100 poke 67AC 00
+4100 poke 67AD 07
+4125 press a
+4155 press a
+4185 press a
+4210 release left
+4215 hold right
+4220 press a
+4250 press a
+4280 press a
+4300 poke 67AC 00
+4300 poke 67AD 07
+4310 press a
+4335 release right
+4340 hold left
+4345 press a
+4375 press a
+4405 press a
+4435 press a
+4460 release left
+4465 hold right
+4470 press a
+4500 press a
+4500 poke 67AC 00
+4500 poke 67AD 07
+4530 press a
+4560 press a
+4585 release right
+4590 hold left
+4595 press a
+4625 press a
+4655 press a
+4685 press a
+4700 poke 67AC 00
+4700 poke 67AD 07
+4710 release left
+4715 hold right
+4720 press a
+4750 press a
+4780 press a
+4810 press a
+4835 release right
+4840 hold left
+4845 press a
+4875 press a
+4900 poke 67AC 00
+4900 poke 67AD 07
+4905 press a
+4935 press a
+4960 release left
+4965 hold right
+4970 press a
+5000 press a
+5030 press a
+5060 press a
+5085 release right
+5090 hold left
+5095 press a
+5100 poke 67AC 00
+5100 poke 67AD 07
+5125 press a
+5155 press a
+5185 press a
+5210 release left
+5215 hold right
+5220 press a
+5250 press a
+5280 press a
+5300 poke 67AC 00
+5300 poke 67AD 07
+5310 press a
+5335 release right
+5340 hold left
+5345 press a
+5375 press a
+5405 press a
+5435 press a
+5460 release left
+5465 hold right
+5470 press a
+5500 press a
+5500 poke 67AC 00
+5500 poke 67AD 07
+5530 press a
+5560 press a
+5585 release right
+5590 hold left
+5595 press a
+5625 press a
+5655 press a
+5685 press a
+5700 poke 67AC 00
+5700 poke 67AD 07
+5710 release left
+5715 hold right
+5720 press a
+5750 press a
+5780 press a
+5810 press a
+5835 release right
+5840 hold left
+5845 press a
+5875 press a
+5900 poke 67AC 00
+5900 poke 67AD 07
+5905 press a
+5935 press a
+5960 release left
+5965 hold right
+5970 press a
+6000 press a
+6030 press a
+6060 press a
+6085 release right
+6090 hold left
+6095 press a
+6100 poke 67AC 00
+6100 poke 67AD 07
+6125 press a
+6155 press a
+6185 press a
+6210 release left
+6215 hold right
+6220 press a
+6250 press a
+6280 press a
+6300 poke 67AC 00
+6300 poke 67AD 07
+6310 press a
+6335 release right
+6340 hold left
+6345 press a
+6375 press a
+6405 press a
+6435 press a
+6460 release left
+6465 hold right
+6470 press a
+6500 press a
+6500 poke 67AC 00
+6500 poke 67AD 07
+6530 press a
+6560 press a
+6585 release right
+6590 hold left
+6595 press a
+6625 press a
+6655 press a
+6685 press a
+6700 poke 67AC 00
+6700 poke 67AD 07
+6710 release left
+6715 hold right
+6720 press a
+6750 press a
+6780 press a
+6810 press a
+6835 release right
+6840 hold left
+6845 press a
+6875 press a
+6900 poke 67AC 00
+6900 poke 67AD 07
+6905 press a
+6935 press a
+6960 release left
+6965 hold right
+6970 press a
+7000 press a
+7030 press a
+7060 press a
+7085 release right
+7090 hold left
+7095 press a
+7100 poke 67AC 00
+7100 poke 67AD 07
+7125 press a
+7155 press a
+7185 press a
+7210 release left
+7215 hold right
+7220 press a
+7250 press a
+7280 press a
+7300 poke 67AC 00
+7300 poke 67AD 07
+7310 press a
+7335 release right
+7340 hold left
+7345 press a
+7375 press a
+7405 press a
+7435 press a
+7460 release left
+7465 hold right
+7470 press a
+7500 press a
+7500 poke 67AC 00
+7500 poke 67AD 07
+7530 press a
+7560 press a
+7585 release right
+7590 hold left
+7595 press a
+7625 press a
+7655 press a
+7685 press a
+7700 poke 67AC 00
+7700 poke 67AD 07
+7710 release left
+7715 hold right
+7720 press a
+7750 press a
+7780 press a
+7810 press a
+7835 release right
+7840 hold left
+7845 press a
+7875 press a
+7900 poke 67AC 00
+7900 poke 67AD 07
+7905 press a
+7935 press a
+7960 release left
+7965 hold right
+7970 press a
+8000 press a
+8030 press a
+8060 press a
+8085 release right
+8090 hold left
+8095 press a
+8100 poke 67AC 00
+8100 poke 67AD 07
+8125 press a
+8155 press a
+8185 press a
+8210 release left
+8215 hold right
+8220 press a
+8250 press a
+8280 press a
+8300 poke 67AC 00
+8300 poke 67AD 07
+8310 press a
+8335 release right
+8340 hold left
+8345 press a
+8375 press a
+8405 press a
+8435 press a
+8460 release left
+8465 hold right
+8470 press a
+8500 press a
+8500 poke 67AC 00
+8500 poke 67AD 07
+8530 press a
+8560 press a
+8585 release right
+8590 hold left
+8595 press a
+8625 press a
+8655 press a
+8685 press a
+8700 poke 67AC 00
+8700 poke 67AD 07
+8710 release left
+8715 hold right
+8720 press a
+8750 press a
+8780 press a
+8810 press a
+8835 release right
+8840 hold left
+8845 press a
+8875 press a
+8900 poke 67AC 00
+8900 poke 67AD 07
+8905 press a
+8935 press a
+8960 release left
+8965 hold right
+8970 press a
+9000 press a
+9030 press a
+9050 end

@@ -27,6 +27,9 @@ frame by frame against MAME's cores, and ported with SDL 3 to every platform the
 | `rom/sonic.ngc`, `rom/ngpcbios.rom` | the cartridge and the NGPC BIOS (the BIOS for the reference only) |
 | `external/spa-disassembly/` | Valley Bell's release, extracted (the download, its 7z: `D:\vs-cheviman\spa-port`) |
 | `build/asm/` | `external/spa-disassembly/disassembly` assembled with its `asw` (0 errors): `built.npc`, `Main.lst` (address and bytes of every line) |
+| `tests/controls/` | the scenarios, controls scripts for `ngpref` (console-decomp's `ngp/script.h`) |
+| `tools/listing_coverage.py` | the share of the listing's instructions the scenarios' traces run, and what never runs |
+| `tools/object_scenarios.py` | the objects of every level, read from the cartridge, and the `objects_*` scenarios |
 | `tools/console/`, branch `ngp` | MAME 0.289's sources, all BSD-3-Clause, in `tlcs900/mame/` (core, 900 and 900/H tables, disassembler, TMP95C061) and `ngp/reference/mame/` (ngp.cpp, K1GE/K2GE, T6W28); `external/mame/ngpc.xml` (ignored by git) |
 
 `rom/`, `external/` and `build/` are ignored by git.
@@ -412,6 +415,152 @@ frame by frame against MAME's cores, and ported with SDL 3 to every platform the
   Its review of `boot.hxx` found nothing. The server elsewhere refused both requests the spill sent it (HTTP 400,
   invalid_request); the local worker answered them.
 
+## What the twelfth round found (the scenarios, first part, 27-11-2026)
+
+- **The measure**: `tools/listing_coverage.py` counts the instructions of AS's listing of the disassembly
+  (`build/asm/Main.lst`, whose labels are the original's addresses) that ngpref's traces ran: 49979 instructions
+  (151621 bytes) in 200000-3FFFFF, the 46 the macro INS3 writes as bytes among them; every address the scenarios
+  run in the cartridge is an instruction's start in the listing. `--never` writes the stretches no scenario ran,
+  under their label; `--labels` each label's instructions run and in all.
+- **The debug mode is the development hardware**: the header's byte at 20001F at FF (the start address's high
+  byte) is tested in 21 places. Proposed by Claude and chosen by Sebas: patch that byte for the debug menu's
+  scenario. It does not work on a console: with it the entry sets XSP and `User_Shutdown`, and the save routine
+  (sub_2375FA) calls SWI 1 with F0h after VECT_FLASHWRITE, a call of the development BIOS; the console's table at
+  FFFE00 has no entry there, the call jumps to 000000 and the BIOS turns the console off (frame 461, the boot's
+  first save). So the cartridge stays as it is, and the SEGA screen's object is sent to the debug menu by its
+  routine, which `poke 499C DB` turns from 23AFBB (waiting for A, B or Option) to 23AFDB, the debug test's branch
+  (`LD XWA, LoadDebugMenu`), the option offered beside the patch. The FF side of the byte's 21 tests never runs.
+- **The debug menu**: BEGINNING and CONTINUE, the level select of the 17 levels (the 12 acts, Last Utopia, Chaotic
+  Space, the special stage, two test stages); GO TO ROOM, the rooms; DIRECTION, the endings, the continue screen
+  and the opening; DEBUG OPTION, the debug display, the boxes, MUTEKI and ALL_CLEAR; SOUND TEST. **Test Stage 2
+  stops the console**: an object of its start runs from 232AAE, in the data, to an undefined opcode at 232AB2 and
+  SWI 2, the BIOS's power off (frame 859): it is left out of the scenarios. DIRECTION's TITLE_LOGO, and A on the
+  title OPENING ends in, leave the screen black with no way out (the title logo's wait).
+- **Reaching a point of an act**: the star post's variables (67D4-67DB: place, number, second parameter) poked as
+  if it had been touched, and the player's Y under 64 for 4 frames: Y counts up from the level's bottom and
+  `CheckDeathPit` kills under 64, so the player loses a life and starts again there with the camera and the
+  objects as after a star post. Moving the player alone leaves the camera behind (he dies and starts again at the
+  act's start); a poke of Y in one frame is lost when the frame lags (the main loop writes its own copy back).
+  The places come from the object layouts (`level/*_Objects.bin`), where an object's ID is stored plus one: 0E
+  the star posts (0D), 0F the signpost (0E), 10 the capsule (0F), 12 the boss (11).
+- **The scenarios** (`tests/controls`, all from the console set up but `setup.txt`): `attract` (nothing pressed,
+  the two demos: Neo South Island and Cosmic Casino act 1); `debug_menu` (DEBUG OPTION, SOUND TEST, act 1-1 with
+  the debug display); `direction` (both endings with their credits, the continue screen, the opening); `zone1` to
+  `zone6` (each zone's act 1 started, a star post before the signpost, the tally, act 2 started, a star post before
+  the boss, the arena; in Aquatic Relics the boss takes every life: game over); `posts_1-1` to `posts_6-2` (every
+  star post of the 11 acts that have them, 400 frames from each); `last_utopia`, `chaotic_space`,
+  `special_stage`, `test_stage1`; and the two before. Two runs of three of them give the same hashes and trace,
+  and in all 26 the runtime's K2GE, T6W28, TMP95C061 and mix differ from MAME's in nothing.
+- **The share run**: 25210 of the 49979 instructions (50.44%; the two scenarios before, 11.39%); each zone
+  15.9-19.9%, each act's star posts 15.0-18.7%, the attract 17.5%. 3458 stretches never run (24769
+  instructions). The largest, by the named label they are under: the objects of the acts' middles the star posts
+  skip (Secret Plant's bullets, Chopper, Spiny, Slicer, Nebula, Balkiry, Coconuts, Cosmic Casino's bumpers, Aquatic
+  Relics' platforms, Gigantic Angel's switches); the bosses not started (Aerobase's, Boss4_Load, none; Cosmic
+  Casino's, Boss2_Load, 154 of 444) and the later phases of the others (none is beaten); the rooms of GO TO ROOM:
+  the puzzle (ShowPuzzleGame, GetPuzzleMask, GetPuzzleOpts, 0 of 2455), the time trial (TimeTr_ShowZone), the duel
+  by link (InitDuelMode, ShowLnkDiscnScr), the options; Super Sonic (SonicTurnSuper), the zone's picture
+  (ShowZoneImage), the invincibility's music, the save's error screens and the development hardware's paths.
+- **The local worker** drafted `listing_coverage.py` from a spec with an example and a check that ran it on that
+  example and on a second listing it did not see (INS3, continuation lines, more than ten of a list). The check
+  failed every round: its listing had lost the space that ends a line of bytes, which the prompt's example and
+  the real listing keep; fixed, the second and third drafts pass. By hand: tabs, one function for a trace's line
+  and the union's, INS3's length without a search. It mapped the six menu screens (DEBUG OPTION, SOUND TEST,
+  DIRECTION, the title and level select, the rooms, the options), each right at the first try; for the options the
+  range given held none of its code, and it said so instead of making it up.
+
+## What the thirteenth round found (the TLCS-900/H decoder and the scenarios, second part, 27-11-2026)
+
+- **The decoder** (console-decomp `tlcs900/disassembler.py`, step 5): MAME's dasm900 ported to Python on its own
+  tables (`tlcs900/tables.py`, written from dasm900.cpp and tmp95c061.cpp by a script, entry for entry: the 15
+  opcode tables, the register names, the conditions, the TMP95C061's names). Its text and length are MAME's at
+  every offset of the cartridge (2 MB at 200000), of the BIOS (64 KB at FF0000) and of an image of every opcode of
+  every table after each form that leads to it (no prefix; 80-BF with and without a displacement; C0-F5 in each
+  addressing mode, the mode 3 codes 00, 01, 02, 03, 07, 13 and two undefined; C8-EF and C7, D7, E7), every register
+  code after each form that reads one and every value of each operand MAME names, with no names and with the
+  TMP95C061's: `ngp/reference/compare_tlcs900_with_mame.py` runs MAME's own (`oracle_tlcs900`, built by
+  reference.cmake) and finds 0 differences in 6.3 million offsets. MAME's text keeps its quirks (a 32-bit immediate
+  as the first operand has no space; the PC-relative form's address is not masked to 24 bits; an 8- or 16-bit
+  immediate below 80h prints as the TMP95C061's register of that address). On top of it each instruction carries
+  its operands as the core computes them (900tbl.hxx op_80-op_F0: the displacement after 88-BF is signed, MAME
+  prints it unsigned; (-xrr) and (xrr+) step by 1 << (code & 3)), its prefix, opcode and width, and its flow (JR,
+  JRL, JP with a condition: T a jump, F never taken, the others a branch; RET cc likewise; SWI a call with no
+  fixed target). Against AS's listing, all 49979 instructions of the cartridge have the decoder's length, and none
+  decodes as db.
+- **Where the core and dasm900 part**: the core's op_88 (900tbl.hxx, shared by the 900/H) takes its second byte's
+  entry from s_mnemonic_80, not s_mnemonic_88 (dasm900 reads mnemonic_88; for A8 both read A0's): they differ in
+  the 8 entries 10-17, LDI to CPDR; and F7, LDX, is 6 bytes in the core (op_LDX reads 5 more) and 1 in dasm900.
+  The program has no 88-8F instruction on those entries and no F7 at an instruction's start; the translator (step
+  7) takes the core's reading.
+- **The objects of the acts** (`tools/object_scenarios.py`): the object layouts read from the cartridge (LvlObjList at
+  39F796 in the listing: per level the number of X and Y screens, a table of 16-bit offsets, each screen's list of a
+  flag slot, a count and 10-byte entries: the number held, a parameter, X, Y and four bytes; the game's
+  LoadObjects), 1793 objects in the 13 levels; `write` makes `objects_1-1` to `objects_6-2`, one point per kind of
+  object of each act in order of X, each reached by the star post's variables and the pit 80 pixels before it, then
+  right, left, right and left around it with jumps (run right for 400 frames, the first try, crossed the signpost in
+  Neo South Island act 1 at its eleventh point and played the rest in act 2). An object's ID there is its index in
+  ObjectPtrList, as Valley Bell's Objects.txt; the disassembly's labels number from one (obj0E_LampPost is ID 0D).
+  Beyond round 12 they run 2523 instructions in 111 regions (Obj28, Obj64, Obj36, Obj1E, Obj2E, Obj4A, Cosmic
+  Casino's boss started, Aerobase's path moves...).
+- **The rooms** (GO TO ROOM opens the game's ROOM SELECT: TRIAL, DUEL, PUZZLE, GAME OPTION, EXIT): `rooms_trial`
+  (the name asked once, TIME TRIAL and ADVANCED, the act select and its times, the pit in a trial: TRY AGAIN? CHANGE
+  ACT? QUIT, each taken; RANKING: 2161 instructions beyond round 12), `rooms_options` (900), `rooms_duel` (JUST A
+  MOMENT, then LINK WAS DISCONNECTED. TURN OFF & RETRY LINK, which only the power leaves: 427), `rooms_puzzle` (947:
+  PUZZLE INITIALIZE with the debug option ALL_CLEAR on fills the puzzle memory, 6AEA, with 99, 100, ...:
+  InitPuzzleMem; BUILD and VIEW PUZZLE). Only act 1-1 is open to the trials until an act is cleared, and TRY AGAIN
+  starts the act over whatever the star post's variables say. `trial_end` reaches the signpost: the player and the
+  camera put 56 pixels before it in one go (671A/671E; the camera at 5056/5058, its copy at 5060/5062 and plane 2's
+  at 506C/506E and 5076/5078: the player's X less 48, Y less 75), with MUTEKI; pushed by X alone he goes into the
+  ground and dies, and with the ground speed (6720) poked he sticks in a valley. SONIC GOT THROUGH, RANK UP, the TOP 5
+  with the new time (2803 beyond round 12). `rooms_ranking`: RANKING's TIME TRIAL and ADVANCED tables (BEST TIME,
+  YOUR BEST), DATA INITIALIZE and DATA RESET (1900).
+- **The special stage from an act** (`special_ring`): its ring (object 10) shows behind the signpost only with 50
+  rings or more (CanShowSSRing compares the ring counter, 67A8, with 50); the rings poked, the star post's place
+  before the signpost, a run right with jumps: the ring is taken, SetSpcStageWarp, the special stage, its tally and
+  act 2 (83 instructions beyond round 12).
+- **The bosses**: each counts the hits it takes at its object's +39h, set by SetBossHits from Opts_BossHitCnt (8 in
+  normal, 6 in easy), decremented when Coll_AtkByPlr finds the player's attack box on it; Knuckles at +3Ah; Chaotic
+  Space's boss in byte_6792, a rocket a hit. With MUTEKI (67C0) and the player jumping right and left, Neo South
+  Island's boss is beaten by play, Cosmic Casino's and Knuckles take one hit; Secret Plant's and Gigantic Angel's
+  stay above the jumps' reach, and their count poked to 1 changes nothing. So each boss's object, found in a RAM dump
+  of its fight (the routine at +00 in its code and the count at +39h: Secret Plant's at 41E2, Cosmic Casino's 43F6,
+  Knuckles 4442, Aerobase's 4312, Gigantic Angel's 427A, Last Utopia's 414A), has its routine poked, four bytes in one
+  frame, to where it goes on when the count runs out (loc_3A1BF5, loc_3A24A8, loc_3A303E, loc_3A3984, loc_3A4735;
+  Knuckles' count to 0 and his routine to his hit's, loc_3D2172): the state the last hit leaves, but for that hit's
+  sound and flash. The capsules wait at loc_3DCF3D for the button (sub_39D09B); their routine poked to 3DCFD3 opens
+  them. Every boss explodes, every act 2 ends (`boss_1-2` to `boss_6-2`, `boss_5-2_end`; `boss_5-2` and `boss_lu`
+  the fights): the tally and the next zone, Knuckles' scene with Eggman before Sky Chase. Aquatic Relics' arena is
+  reached from its star post 3: from 250 pixels before the boss the player falls to the pit every time, and the air
+  is poked. `true_ending`: the six emeralds (6A64 3F) and the boss's seventh (byte_68E2 bit 1) poked once the boss
+  has loaded, its defeat: SONIC GOT THROUGH FINAL, Super Sonic (SonicTurnSuper), Chaotic Space; byte_6792 poked to 1
+  and the rings kept, a rocket broken ends it (sub_39E9BF's Chaotic Space branch) and the good ending's credits run.
+- **The share run**: 36803 of the 49979 instructions (73.64%; round 12 50.44%), 111593 of 151621 bytes, in 54
+  scenarios; 2078 stretches never run (13176 instructions). Each `objects_*` 15.9-21.1%, the rooms 5.6-17.0%, the
+  bosses 15.5-19.8%, `true_ending` 22.3%. Eight of the new scenarios run twice give the same hashes and trace, and in
+  all 54 the runtime's K2GE, T6W28, TMP95C061 and mix differ from MAME's in nothing.
+- **What never runs** (`build/runs/r13/never2.txt`, 2078 stretches; `regions2.txt` by named label), the largest
+  regions, described by the local worker from the disassembly and checked against the labels and strings they
+  cite: the name entry's other paths (sub_3DB87D, 380 of 1514); the sound test's other songs and groups (sub_3E54D9,
+  343 of 919); the trials' act select in its other unlock states (GetPuzzleOpts, 500 of 1027); the zone select
+  (ShowZoneImage, 78 of 531); the link's screens (LINK READY and QUIT GAME under Obj3F_Load, 125 of 352; the TOP 5
+  UPDATE by link, sub_3DE61F, 7 of 282; the duel's act menu, sub_3D6365, 59 of 213, and its act's end, sub_3E1597,
+  6 of 196), which need a second console; Nebula's ring arcs (Obj65_Load, 73 of 404); the background planes' scroll
+  copy (sub_23E9A1, 3 of 285); the title menu (CopyPalTileSet, 35 of 187); the puzzle's game (ShowPuzzleGame, 147 of
+  269). The rest are stretches of a few instructions in code that runs: the other side of a test.
+- **The local worker** drafted the decoder from a spec with the API, the rules of the structured fields and a check
+  (28 cases of fields, then MAME's text at every offset of the opcode image and the BIOS): the first try wrote MAME's
+  two operand switches twice and looped; told to write one operand function called twice, its third round passed
+  every field but two, which were the check's own (a 16-bit immediate written with one byte), and the full
+  comparison then found one slip, the (n) and (nn) forms' names at the operation's width, fixed by hand (2 lines):
+  0 differences. It drafted `object_scenarios.py` (3 rounds failing: the default paths from the script's folder,
+  the listing's label after several spaces; the regex fixed by hand, the comments' wrap rewritten), mapped the rooms
+  (its first answer, sent to the server elsewhere by the spill, was all thinking and cut; again with no thinking,
+  right) and InitPuzzleMem (right but for one fact: ALL_CLEAR writes 99, 100, ..., not 99h), reviewed the new tools
+  (its one finding, data_buffer given the size less one, is the stub's mask: no defect) and described the 20 largest
+  gaps (8 of them again after the server's context overflowed, HTTP 500, while a stopped batch's requests still held
+  it; one gave zones of other games' names). The batch that looked for each boss's hit count was stopped once
+  SetBossHits was read; Chaotic Space's boss (byte_6792, a rocket a hit, the explosion at loc_3D2DDE) it found right.
+  In all, this session: 560643 tokens consumed, 396983 effective, 27 of 31 pieces right at the first try.
+
 ## The steps, each with its check
 
 1. **Repositories**: `spa-decomp` (tools/core = arcade-decomp, tools/console = console-decomp on `ngp`) and
@@ -433,9 +582,16 @@ frame by frame against MAME's cores, and ported with SDL 3 to every platform the
    interrupts, micro DMA, A/D) 27-11-2026 (beside MAME's: the core is MAME's); the DACs and the mix 27-11-2026;
    what the program takes from the BIOS (`--handover`) 27-11-2026; the BIOS's boot in C (`--boot`) 27-11-2026.
 4. **Scenarios**: attract, every zone and act, the special stages, the bosses, options, the debug menu, a save.
-   Check: the share of instructions run, and what never runs, written down.
+   Check: the share of instructions run, and what never runs, written down (`tools/listing_coverage.py`). Done
+   27-11-2026: 54 scenarios, 73.64% (the twelfth and thirteenth rounds), what never runs in the thirteenth round's
+   list: every zone and act, one object of each kind in each act, every boss beaten and its act ended, the special
+   stage from an act's ring, the rooms (trial to its signpost and its ranking, duel, puzzle, options), the true
+   ending by play to its credits, the debug menu. What never runs is mostly the link's screens (a second console)
+   and the other sides of the menus.
 5. **The TLCS-900H decoder** (console-decomp `tlcs900/`). Check: the same as MAME's `dasm900` at every offset of the
-   program and of an image of every opcode.
+   program and of an image of every opcode. Done 27-11-2026: `tlcs900/disassembler.py` on `tlcs900/tables.py`, 0
+   differences at every offset of the cartridge, the BIOS and the image of every opcode
+   (`ngp/reference/compare_tlcs900_with_mame.py`), every instruction of the listing the same length.
 6. **Coverage and named data**: `symbols.txt` from the disassembly's labels and comments; the asset cut from its
    `binclude` files. Check: 0 bytes unexplained; each extractor `--check` byte for byte.
 7. **The 1:1 translator and the decompiler** (on arcade-decomp's core). Check: the same hashes as `ngpref` in every

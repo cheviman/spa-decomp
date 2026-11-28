@@ -1,0 +1,139 @@
+# Cosmic Casino, from a console set up and off (--nvram build/setup.nv): the debug menu by the poke at 499C
+# (direction.txt), BEGINNING, act 1 picked in the level select (A at 840), the lives poked to 5 (940); the act's
+# start run right and jumped; at 1590 the lamppost's place poked 200 pixels before the signpost (the object layout's,
+# 4464,392) as a lamppost past the level's own (67D4-67DB) and the player's Y under 64 for 4 frames, the level's pit
+# (CheckDeathPit): a life lost, the player starts again there, runs past the signpost; the act's tally and act 2,
+# under way by 2900; its start run right and jumped; at 3560 the lamppost poked 250 pixels before the boss (5232,672)
+# and the pit again: the boss's arena, run right, then left with jumps (4140-5740); the boss takes two lives
+600 poke 499C DB
+650 press a
+700 press down
+730 press down
+760 press down
+790 press down
+840 press a
+940 poke 67AF 05
+970 hold right
+980 press a
+1020 press a
+1060 press a
+1100 press a
+1140 press a
+1180 press a
+1220 press a
+1260 press a
+1300 press a
+1340 press a
+1380 press a
+1420 press a
+1460 press a
+1500 press a
+1540 press a
+1570 release right
+1590 poke 67D4 A8
+1590 poke 67D5 10
+1590 poke 67D6 95
+1590 poke 67D7 01
+1590 poke 67DB 10
+1590 poke 67DA 00
+1590 poke 671E 20
+1590 poke 671F 00
+1591 poke 671E 20
+1591 poke 671F 00
+1592 poke 671E 20
+1592 poke 671F 00
+1593 poke 671E 20
+1593 poke 671F 00
+1970 hold right
+1980 press a
+2180 press a
+2270 release right
+3140 hold right
+3150 press a
+3190 press a
+3230 press a
+3270 press a
+3310 press a
+3350 press a
+3390 press a
+3430 press a
+3470 press a
+3510 press a
+3540 release right
+3560 poke 67D4 76
+3560 poke 67D5 13
+3560 poke 67D6 AD
+3560 poke 67D7 02
+3560 poke 67DB 10
+3560 poke 67DA 00
+3560 poke 671E 20
+3560 poke 671F 00
+3561 poke 671E 20
+3561 poke 671F 00
+3562 poke 671E 20
+3562 poke 671F 00
+3563 poke 671E 20
+3563 poke 671F 00
+3940 hold right
+3950 press a
+3990 press a
+4030 press a
+4070 press a
+4110 press a
+4140 release right
+4140 hold left
+4150 press a
+4180 press a
+4210 press a
+4240 press a
+4270 press a
+4300 press a
+4330 press a
+4360 press a
+4390 press a
+4420 press a
+4450 press a
+4480 press a
+4510 press a
+4540 press a
+4570 press a
+4600 press a
+4630 press a
+4660 press a
+4690 press a
+4720 press a
+4750 press a
+4780 press a
+4810 press a
+4840 press a
+4870 press a
+4900 press a
+4930 press a
+4960 press a
+4990 press a
+5020 press a
+5050 press a
+5080 press a
+5110 press a
+5140 press a
+5170 press a
+5200 press a
+5230 press a
+5260 press a
+5290 press a
+5320 press a
+5350 press a
+5380 press a
+5410 press a
+5440 press a
+5470 press a
+5500 press a
+5530 press a
+5560 press a
+5590 press a
+5620 press a
+5650 press a
+5680 press a
+5710 press a
+5740 release left
+5840 end

@@ -1,0 +1,345 @@
+# Cosmic Casino act 2's boss (level 05), from a console set up and off (--nvram build/setup.nv): the debug menu by the
+# poke at 499C, BEGINNING, act 3-2 picked in the level select (A at 870); at 1170 the lives poked to 5, the star
+# post's variables (67D4-67DB) 80 pixels before the boss (the object layout's object 11, at 5232,672) as a star post
+# past the act's own (67DB 10) and the player's Y under 64 for 4 frames, the level's pit: the player starts again
+# there; at 1470 MUTEKI (67C0) on, right with jumps for 300 frames, then left and right in turns, 120 frames each with
+# four jumps. The boss, on its platform over the pinball floor, takes one hit by play. A boss counts its hits at its
+# object's +39h (8, SetBossHits) and, when the count runs out, its routine goes on at its defeat; here the object's
+# routine (+00, four bytes in one frame) is poked to that defeat, the state the last hit leaves it in, but for that
+# hit's sound and flash. At 3000, its object at 43F6, loc_3A24A8: it explodes; The capsule waits at loc_3DCF3D for the
+# player on its button (sub_39D09B); its routine is poked to 3DCFD3, where the button is found pressed: at 4300, its
+# object at 40FE: SONIC GOT THROUGH ACT 2, and Aquatic Relics act 1
+600 poke 499C DB
+650 press a
+700 press down
+730 press down
+760 press down
+790 press down
+820 press down
+870 press a
+1170 poke 67AF 05
+1170 poke 67D4 20
+1170 poke 67D5 14
+1170 poke 67D6 AD
+1170 poke 67D7 02
+1170 poke 67DB 10
+1170 poke 67DA 00
+1170 poke 671E 20
+1170 poke 671F 00
+1171 poke 671E 20
+1171 poke 671F 00
+1172 poke 671E 20
+1172 poke 671F 00
+1173 poke 671E 20
+1173 poke 671F 00
+1470 poke 67C0 01
+1470 poke 67AF 05
+1470 hold right
+1475 press a
+1505 press a
+1535 press a
+1565 press a
+1595 press a
+1625 press a
+1655 press a
+1685 press a
+1715 press a
+1745 press a
+1770 release right
+1780 hold left
+1785 press a
+1815 press a
+1845 press a
+1875 press a
+1900 release left
+1905 hold right
+1910 press a
+1940 press a
+1970 press a
+2000 press a
+2025 release right
+2030 hold left
+2035 press a
+2065 press a
+2095 press a
+2125 press a
+2150 release left
+2155 hold right
+2160 press a
+2190 press a
+2220 press a
+2250 press a
+2275 release right
+2280 hold left
+2285 press a
+2315 press a
+2345 press a
+2375 press a
+2400 release left
+2405 hold right
+2410 press a
+2440 press a
+2470 press a
+2500 press a
+2525 release right
+2530 hold left
+2535 press a
+2565 press a
+2595 press a
+2625 press a
+2650 release left
+2655 hold right
+2660 press a
+2690 press a
+2720 press a
+2750 press a
+2775 release right
+2780 hold left
+2785 press a
+2815 press a
+2845 press a
+2875 press a
+2900 release left
+2905 hold right
+2910 press a
+2940 press a
+2970 press a
+3000 press a
+3000 poke 43F6 A8
+3000 poke 43F7 24
+3000 poke 43F8 3A
+3000 poke 43F9 00
+3025 release right
+3030 hold left
+3035 press a
+3065 press a
+3095 press a
+3125 press a
+3150 release left
+3155 hold right
+3160 press a
+3190 press a
+3220 press a
+3250 press a
+3275 release right
+3280 hold left
+3285 press a
+3315 press a
+3345 press a
+3375 press a
+3400 release left
+3405 hold right
+3410 press a
+3440 press a
+3470 press a
+3500 press a
+3525 release right
+3530 hold left
+3535 press a
+3565 press a
+3595 press a
+3625 press a
+3650 release left
+3655 hold right
+3660 press a
+3690 press a
+3720 press a
+3750 press a
+3775 release right
+3780 hold left
+3785 press a
+3815 press a
+3845 press a
+3875 press a
+3900 release left
+3905 hold right
+3910 press a
+3940 press a
+3970 press a
+4000 press a
+4025 release right
+4030 hold left
+4035 press a
+4065 press a
+4095 press a
+4125 press a
+4150 release left
+4155 hold right
+4160 press a
+4190 press a
+4220 press a
+4250 press a
+4275 release right
+4280 hold left
+4285 press a
+4300 poke 40FE D3
+4300 poke 40FF CF
+4300 poke 4100 3D
+4300 poke 4101 00
+4315 press a
+4345 press a
+4375 press a
+4400 release left
+4405 hold right
+4410 press a
+4440 press a
+4470 press a
+4500 press a
+4525 release right
+4530 hold left
+4535 press a
+4565 press a
+4595 press a
+4625 press a
+4650 release left
+4655 hold right
+4660 press a
+4690 press a
+4720 press a
+4750 press a
+4775 release right
+4780 hold left
+4785 press a
+4815 press a
+4845 press a
+4875 press a
+4900 release left
+4905 hold right
+4910 press a
+4940 press a
+4970 press a
+5000 press a
+5025 release right
+5030 hold left
+5035 press a
+5065 press a
+5095 press a
+5125 press a
+5150 release left
+5155 hold right
+5160 press a
+5190 press a
+5220 press a
+5250 press a
+5275 release right
+5280 hold left
+5285 press a
+5315 press a
+5345 press a
+5375 press a
+5400 release left
+5405 hold right
+5410 press a
+5440 press a
+5470 press a
+5500 press a
+5525 release right
+5530 hold left
+5535 press a
+5565 press a
+5595 press a
+5625 press a
+5650 release left
+5655 hold right
+5660 press a
+5690 press a
+5720 press a
+5750 press a
+5775 release right
+5780 hold left
+5785 press a
+5815 press a
+5845 press a
+5875 press a
+5900 release left
+5905 hold right
+5910 press a
+5940 press a
+5970 press a
+6000 press a
+6025 release right
+6030 hold left
+6035 press a
+6065 press a
+6095 press a
+6125 press a
+6150 release left
+6155 hold right
+6160 press a
+6190 press a
+6220 press a
+6250 press a
+6275 release right
+6280 hold left
+6285 press a
+6315 press a
+6345 press a
+6375 press a
+6400 release left
+6405 hold right
+6410 press a
+6440 press a
+6470 press a
+6500 press a
+6525 release right
+6530 hold left
+6535 press a
+6565 press a
+6595 press a
+6625 press a
+6650 release left
+6655 hold right
+6660 press a
+6690 press a
+6720 press a
+6750 press a
+6775 release right
+6780 hold left
+6785 press a
+6815 press a
+6845 press a
+6875 press a
+6900 release left
+6905 hold right
+6910 press a
+6940 press a
+6970 press a
+7000 press a
+7025 release right
+7030 hold left
+7035 press a
+7065 press a
+7095 press a
+7125 press a
+7150 release left
+7155 hold right
+7160 press a
+7190 press a
+7220 press a
+7250 press a
+7275 release right
+7280 hold left
+7285 press a
+7315 press a
+7345 press a
+7375 press a
+7400 release left
+7405 hold right
+7410 press a
+7440 press a
+7470 press a
+7500 press a
+7525 release right
+7530 hold left
+7535 press a
+7565 press a
+7595 press a
+7625 press a
+7650 release left
+7655 hold right
+7660 press a
+7690 press a
+7720 press a
+7750 press a
+7775 release right
+7830 end

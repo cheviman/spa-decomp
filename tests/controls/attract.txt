@@ -1,0 +1,5 @@
+# From a console set up and off (--nvram build/setup.nv, which tests/controls/setup.txt writes), nothing pressed: the
+# BIOS starts again (FF1800) with the NEOGEO POCKET logo, SEGA (525), the title's animation and PRESS "A" BUTTON; the
+# first demo, Neo South Island act 1 (2150-3450), SEGA again (3450), the title, the second demo, Cosmic Casino act 1
+# (5100-6350), SEGA (6350) and the title's animation (6650)
+6999 end

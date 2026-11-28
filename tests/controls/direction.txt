@@ -1,0 +1,26 @@
+# From a console set up and off (--nvram build/setup.nv), the debug menu's DIRECTION, its scenes: the debug menu
+# opens only on the development hardware (the header's byte at 20001F at FF, which on a console's BIOS stops at the
+# first save: docs/plan.md, the twelfth round), so the SEGA screen's object is sent to it by its routine, which the
+# poke at 499C turns from 23AFBB (waiting for A, B or Option) to 23AFDB, where the debug mode's test leads (LD XWA,
+# LoadDebugMenu). DIRECTION (740): ENDING_1, the bad ending, its credits and GET MORE CHAOS EMERALD! (870, the menu
+# again by 8800); ENDING_2, the good ending and its credits (9060, the menu again by 16400); CONTINUE, the continue
+# screen counted down (16720-17600); OPENING, the title's animation and the title (18000); A there, and the screen
+# stays black: the title logo's wait, which TITLE_LOGO also ends in, with no way out (20200)
+600 poke 499C DB
+650 press down
+680 press down
+710 press down
+740 press a
+840 press down
+870 press a
+9000 press down
+9030 press down
+9060 press a
+16600 press down
+16630 press down
+16660 press down
+16690 press down
+16720 press a
+18000 press a
+20200 press a
+20799 end

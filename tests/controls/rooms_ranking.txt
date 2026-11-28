@@ -1,0 +1,37 @@
+# From a console set up and off (--nvram build/setup.nv): the debug menu by the poke at 499C, GO TO ROOM, TRIAL ROOM
+# (800), the name (A and OK, 1070); RANKING (1250): TIME TRIAL (1400), its BEST TIME and YOUR BEST tables, the act
+# changed with right and left, its pages with down and up, back with B (2050); ADVANCED (2250), its table, back
+# (2600); DATA INITIALIZE (2850): RESET DATA? YES (3050), DATA RESET.; back with B to the trial room
+600 poke 499C DB
+650 press down
+680 press down
+710 press a
+800 press a
+900 press a
+950 press down
+980 press down
+1010 press down
+1040 press right
+1070 press a
+1200 press down
+1250 press a
+1400 press a
+1550 press right
+1650 press right
+1750 press left
+1850 press down
+1950 press up
+2050 press b
+2200 press right
+2250 press a
+2400 press right
+2500 press left
+2600 press b
+2750 press down
+2800 press down
+2850 press a
+3000 press right
+3050 press a
+3200 press b
+3300 press b
+3450 end

@@ -1,0 +1,155 @@
+# Gigantic Angel act 1's star posts, from a console set up and off (--nvram build/setup.nv): the debug menu by the
+# poke at 499C (direction.txt), BEGINNING, act 6-1 picked in the level select (A at 1020); for each of the act's star
+# posts (the object layout's object 0D: its number, place and second parameter), the lives poked to 5, the star
+# post's variables (67D4-67DB) as if it had been touched and the player's Y under 64 for 4 frames, the level's pit: a
+# life lost, the player starts again at the star post and runs right with jumps for 400 frames. The star posts: 0 at
+# 1616,824 (1320), 1 at 2160,216 (2120), 1 at 3560,560 (2920), 2 at 2808,840 (3720), 3 at 2576,1208 (4520)
+600 poke 499C DB
+650 press a
+700 press down
+730 press down
+760 press down
+790 press down
+820 press down
+850 press down
+880 press down
+910 press down
+940 press down
+970 press down
+1020 press a
+1320 poke 67AF 05
+1320 poke 67D4 50
+1320 poke 67D5 06
+1320 poke 67D6 45
+1320 poke 67D7 03
+1320 poke 67DB 00
+1320 poke 67DA 00
+1320 poke 671E 20
+1320 poke 671F 00
+1321 poke 671E 20
+1321 poke 671F 00
+1322 poke 671E 20
+1322 poke 671F 00
+1323 poke 671E 20
+1323 poke 671F 00
+1700 hold right
+1710 press a
+1750 press a
+1790 press a
+1830 press a
+1870 press a
+1910 press a
+1950 press a
+1990 press a
+2030 press a
+2070 press a
+2100 release right
+2120 poke 67AF 05
+2120 poke 67D4 70
+2120 poke 67D5 08
+2120 poke 67D6 E5
+2120 poke 67D7 00
+2120 poke 67DB 01
+2120 poke 67DA 00
+2120 poke 671E 20
+2120 poke 671F 00
+2121 poke 671E 20
+2121 poke 671F 00
+2122 poke 671E 20
+2122 poke 671F 00
+2123 poke 671E 20
+2123 poke 671F 00
+2500 hold right
+2510 press a
+2550 press a
+2590 press a
+2630 press a
+2670 press a
+2710 press a
+2750 press a
+2790 press a
+2830 press a
+2870 press a
+2900 release right
+2920 poke 67AF 05
+2920 poke 67D4 E8
+2920 poke 67D5 0D
+2920 poke 67D6 3D
+2920 poke 67D7 02
+2920 poke 67DB 01
+2920 poke 67DA 00
+2920 poke 671E 20
+2920 poke 671F 00
+2921 poke 671E 20
+2921 poke 671F 00
+2922 poke 671E 20
+2922 poke 671F 00
+2923 poke 671E 20
+2923 poke 671F 00
+3300 hold right
+3310 press a
+3350 press a
+3390 press a
+3430 press a
+3470 press a
+3510 press a
+3550 press a
+3590 press a
+3630 press a
+3670 press a
+3700 release right
+3720 poke 67AF 05
+3720 poke 67D4 F8
+3720 poke 67D5 0A
+3720 poke 67D6 55
+3720 poke 67D7 03
+3720 poke 67DB 02
+3720 poke 67DA 00
+3720 poke 671E 20
+3720 poke 671F 00
+3721 poke 671E 20
+3721 poke 671F 00
+3722 poke 671E 20
+3722 poke 671F 00
+3723 poke 671E 20
+3723 poke 671F 00
+4100 hold right
+4110 press a
+4150 press a
+4190 press a
+4230 press a
+4270 press a
+4310 press a
+4350 press a
+4390 press a
+4430 press a
+4470 press a
+4500 release right
+4520 poke 67AF 05
+4520 poke 67D4 10
+4520 poke 67D5 0A
+4520 poke 67D6 C5
+4520 poke 67D7 04
+4520 poke 67DB 03
+4520 poke 67DA 00
+4520 poke 671E 20
+4520 poke 671F 00
+4521 poke 671E 20
+4521 poke 671F 00
+4522 poke 671E 20
+4522 poke 671F 00
+4523 poke 671E 20
+4523 poke 671F 00
+4900 hold right
+4910 press a
+4950 press a
+4990 press a
+5030 press a
+5070 press a
+5110 press a
+5150 press a
+5190 press a
+5230 press a
+5270 press a
+5300 release right
+5320 end

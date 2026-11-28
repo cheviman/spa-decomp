@@ -1,0 +1,142 @@
+# Aquatic Relics, from a console set up and off (--nvram build/setup.nv): the debug menu by the poke at 499C
+# (direction.txt), BEGINNING, act 1 picked in the level select (A at 900), the lives poked to 5 (1000); the act's
+# start run right and jumped; at 1650 the lamppost's place poked 200 pixels before the signpost (the object layout's,
+# 6256,720) as a lamppost past the level's own (67D4-67DB) and the player's Y under 64 for 4 frames, the level's pit
+# (CheckDeathPit): a life lost, the player starts again there, runs past the signpost; the act's tally and act 2,
+# under way by 2900; its start run right and jumped; at 3620 the lamppost poked 250 pixels before the boss (6336,824)
+# and the pit again: the boss's arena, run right, then left with jumps (4200-5800); the boss takes every life: game
+# over (5600)
+600 poke 499C DB
+650 press a
+700 press down
+730 press down
+760 press down
+790 press down
+820 press down
+850 press down
+900 press a
+1000 poke 67AF 05
+1030 hold right
+1040 press a
+1080 press a
+1120 press a
+1160 press a
+1200 press a
+1240 press a
+1280 press a
+1320 press a
+1360 press a
+1400 press a
+1440 press a
+1480 press a
+1520 press a
+1560 press a
+1600 press a
+1630 release right
+1650 poke 67D4 A8
+1650 poke 67D5 17
+1650 poke 67D6 DD
+1650 poke 67D7 02
+1650 poke 67DB 10
+1650 poke 67DA 00
+1650 poke 671E 20
+1650 poke 671F 00
+1651 poke 671E 20
+1651 poke 671F 00
+1652 poke 671E 20
+1652 poke 671F 00
+1653 poke 671E 20
+1653 poke 671F 00
+2030 hold right
+2040 press a
+2240 press a
+2330 release right
+3200 hold right
+3210 press a
+3250 press a
+3290 press a
+3330 press a
+3370 press a
+3410 press a
+3450 press a
+3490 press a
+3530 press a
+3570 press a
+3600 release right
+3620 poke 67D4 C6
+3620 poke 67D5 17
+3620 poke 67D6 45
+3620 poke 67D7 03
+3620 poke 67DB 10
+3620 poke 67DA 00
+3620 poke 671E 20
+3620 poke 671F 00
+3621 poke 671E 20
+3621 poke 671F 00
+3622 poke 671E 20
+3622 poke 671F 00
+3623 poke 671E 20
+3623 poke 671F 00
+4000 hold right
+4010 press a
+4050 press a
+4090 press a
+4130 press a
+4170 press a
+4200 release right
+4200 hold left
+4210 press a
+4240 press a
+4270 press a
+4300 press a
+4330 press a
+4360 press a
+4390 press a
+4420 press a
+4450 press a
+4480 press a
+4510 press a
+4540 press a
+4570 press a
+4600 press a
+4630 press a
+4660 press a
+4690 press a
+4720 press a
+4750 press a
+4780 press a
+4810 press a
+4840 press a
+4870 press a
+4900 press a
+4930 press a
+4960 press a
+4990 press a
+5020 press a
+5050 press a
+5080 press a
+5110 press a
+5140 press a
+5170 press a
+5200 press a
+5230 press a
+5260 press a
+5290 press a
+5320 press a
+5350 press a
+5380 press a
+5410 press a
+5440 press a
+5470 press a
+5500 press a
+5530 press a
+5560 press a
+5590 press a
+5620 press a
+5650 press a
+5680 press a
+5710 press a
+5740 press a
+5770 press a
+5800 release left
+5900 end

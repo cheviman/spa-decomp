@@ -1,0 +1,91 @@
+# Neo South Island act 1's star posts, from a console set up and off (--nvram build/setup.nv): the debug menu by the
+# poke at 499C (direction.txt), BEGINNING, act 1-1 picked in the level select (A at 720); for each of the act's star
+# posts (the object layout's object 0D: its number, place and second parameter), the lives poked to 5, the star
+# post's variables (67D4-67DB) as if it had been touched and the player's Y under 64 for 4 frames, the level's pit: a
+# life lost, the player starts again at the star post and runs right with jumps for 400 frames. The star posts: 0 at
+# 3024,424 (1020), 1 at 4008,480 (1820), 2 at 4568,288 (2620)
+600 poke 499C DB
+650 press a
+720 press a
+1020 poke 67AF 05
+1020 poke 67D4 D0
+1020 poke 67D5 0B
+1020 poke 67D6 B5
+1020 poke 67D7 01
+1020 poke 67DB 00
+1020 poke 67DA 00
+1020 poke 671E 20
+1020 poke 671F 00
+1021 poke 671E 20
+1021 poke 671F 00
+1022 poke 671E 20
+1022 poke 671F 00
+1023 poke 671E 20
+1023 poke 671F 00
+1400 hold right
+1410 press a
+1450 press a
+1490 press a
+1530 press a
+1570 press a
+1610 press a
+1650 press a
+1690 press a
+1730 press a
+1770 press a
+1800 release right
+1820 poke 67AF 05
+1820 poke 67D4 A8
+1820 poke 67D5 0F
+1820 poke 67D6 ED
+1820 poke 67D7 01
+1820 poke 67DB 01
+1820 poke 67DA 00
+1820 poke 671E 20
+1820 poke 671F 00
+1821 poke 671E 20
+1821 poke 671F 00
+1822 poke 671E 20
+1822 poke 671F 00
+1823 poke 671E 20
+1823 poke 671F 00
+2200 hold right
+2210 press a
+2250 press a
+2290 press a
+2330 press a
+2370 press a
+2410 press a
+2450 press a
+2490 press a
+2530 press a
+2570 press a
+2600 release right
+2620 poke 67AF 05
+2620 poke 67D4 D8
+2620 poke 67D5 11
+2620 poke 67D6 2D
+2620 poke 67D7 01
+2620 poke 67DB 02
+2620 poke 67DA 00
+2620 poke 671E 20
+2620 poke 671F 00
+2621 poke 671E 20
+2621 poke 671F 00
+2622 poke 671E 20
+2622 poke 671F 00
+2623 poke 671E 20
+2623 poke 671F 00
+3000 hold right
+3010 press a
+3050 press a
+3090 press a
+3130 press a
+3170 press a
+3210 press a
+3250 press a
+3290 press a
+3330 press a
+3370 press a
+3400 release right
+3420 end

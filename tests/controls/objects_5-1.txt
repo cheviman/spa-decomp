@@ -1,0 +1,264 @@
+# Sky Chase (level 08), from a console set up and off (--nvram build/setup.nv): the debug menu by the poke at 499C,
+# BEGINNING, act 5-1 picked in the level select (A at 960); for each point the lives poked to 5, the star post's
+# variables (67D4-67DB) as if a star post past the act's own had been touched (67DB 10) 80 pixels before the object,
+# and the player's Y under 64 for 4 frames, the level's pit: a life lost, the player starts again there and runs
+# right, left, right and left around the object, 100 frames each with three jumps. The points, the object's ID at its
+# place (the frame): 0C at 272,312 (1260), 66 at 296,176 (2060), 64 at 568,216 (2860), 65 at 736,80 (3660), 0B at
+# 944,297 (4460), 67 at 1768,72 (5260), 10 at 3864,239 (6060)
+600 poke 499C DB
+650 press a
+700 press down
+730 press down
+760 press down
+790 press down
+820 press down
+850 press down
+880 press down
+910 press down
+960 press a
+1260 poke 67AF 05
+1260 poke 67D4 C0
+1260 poke 67D5 00
+1260 poke 67D6 45
+1260 poke 67D7 01
+1260 poke 67DB 10
+1260 poke 67DA 00
+1260 poke 671E 20
+1260 poke 671F 00
+1261 poke 671E 20
+1261 poke 671F 00
+1262 poke 671E 20
+1262 poke 671F 00
+1263 poke 671E 20
+1263 poke 671F 00
+1640 hold right
+1650 press a
+1690 press a
+1730 press a
+1735 release right
+1740 hold left
+1750 press a
+1790 press a
+1830 press a
+1835 release left
+1840 hold right
+1850 press a
+1890 press a
+1930 press a
+1935 release right
+1940 hold left
+1950 press a
+1990 press a
+2030 press a
+2035 release left
+2060 poke 67AF 05
+2060 poke 67D4 D8
+2060 poke 67D5 00
+2060 poke 67D6 BD
+2060 poke 67D7 00
+2060 poke 67DB 10
+2060 poke 67DA 00
+2060 poke 671E 20
+2060 poke 671F 00
+2061 poke 671E 20
+2061 poke 671F 00
+2062 poke 671E 20
+2062 poke 671F 00
+2063 poke 671E 20
+2063 poke 671F 00
+2440 hold right
+2450 press a
+2490 press a
+2530 press a
+2535 release right
+2540 hold left
+2550 press a
+2590 press a
+2630 press a
+2635 release left
+2640 hold right
+2650 press a
+2690 press a
+2730 press a
+2735 release right
+2740 hold left
+2750 press a
+2790 press a
+2830 press a
+2835 release left
+2860 poke 67AF 05
+2860 poke 67D4 E8
+2860 poke 67D5 01
+2860 poke 67D6 E5
+2860 poke 67D7 00
+2860 poke 67DB 10
+2860 poke 67DA 00
+2860 poke 671E 20
+2860 poke 671F 00
+2861 poke 671E 20
+2861 poke 671F 00
+2862 poke 671E 20
+2862 poke 671F 00
+2863 poke 671E 20
+2863 poke 671F 00
+3240 hold right
+3250 press a
+3290 press a
+3330 press a
+3335 release right
+3340 hold left
+3350 press a
+3390 press a
+3430 press a
+3435 release left
+3440 hold right
+3450 press a
+3490 press a
+3530 press a
+3535 release right
+3540 hold left
+3550 press a
+3590 press a
+3630 press a
+3635 release left
+3660 poke 67AF 05
+3660 poke 67D4 90
+3660 poke 67D5 02
+3660 poke 67D6 5D
+3660 poke 67D7 00
+3660 poke 67DB 10
+3660 poke 67DA 00
+3660 poke 671E 20
+3660 poke 671F 00
+3661 poke 671E 20
+3661 poke 671F 00
+3662 poke 671E 20
+3662 poke 671F 00
+3663 poke 671E 20
+3663 poke 671F 00
+4040 hold right
+4050 press a
+4090 press a
+4130 press a
+4135 release right
+4140 hold left
+4150 press a
+4190 press a
+4230 press a
+4235 release left
+4240 hold right
+4250 press a
+4290 press a
+4330 press a
+4335 release right
+4340 hold left
+4350 press a
+4390 press a
+4430 press a
+4435 release left
+4460 poke 67AF 05
+4460 poke 67D4 60
+4460 poke 67D5 03
+4460 poke 67D6 36
+4460 poke 67D7 01
+4460 poke 67DB 10
+4460 poke 67DA 00
+4460 poke 671E 20
+4460 poke 671F 00
+4461 poke 671E 20
+4461 poke 671F 00
+4462 poke 671E 20
+4462 poke 671F 00
+4463 poke 671E 20
+4463 poke 671F 00
+4840 hold right
+4850 press a
+4890 press a
+4930 press a
+4935 release right
+4940 hold left
+4950 press a
+4990 press a
+5030 press a
+5035 release left
+5040 hold right
+5050 press a
+5090 press a
+5130 press a
+5135 release right
+5140 hold left
+5150 press a
+5190 press a
+5230 press a
+5235 release left
+5260 poke 67AF 05
+5260 poke 67D4 98
+5260 poke 67D5 06
+5260 poke 67D6 55
+5260 poke 67D7 00
+5260 poke 67DB 10
+5260 poke 67DA 00
+5260 poke 671E 20
+5260 poke 671F 00
+5261 poke 671E 20
+5261 poke 671F 00
+5262 poke 671E 20
+5262 poke 671F 00
+5263 poke 671E 20
+5263 poke 671F 00
+5640 hold right
+5650 press a
+5690 press a
+5730 press a
+5735 release right
+5740 hold left
+5750 press a
+5790 press a
+5830 press a
+5835 release left
+5840 hold right
+5850 press a
+5890 press a
+5930 press a
+5935 release right
+5940 hold left
+5950 press a
+5990 press a
+6030 press a
+6035 release left
+6060 poke 67AF 05
+6060 poke 67D4 C8
+6060 poke 67D5 0E
+6060 poke 67D6 FC
+6060 poke 67D7 00
+6060 poke 67DB 10
+6060 poke 67DA 00
+6060 poke 671E 20
+6060 poke 671F 00
+6061 poke 671E 20
+6061 poke 671F 00
+6062 poke 671E 20
+6062 poke 671F 00
+6063 poke 671E 20
+6063 poke 671F 00
+6440 hold right
+6450 press a
+6490 press a
+6530 press a
+6535 release right
+6540 hold left
+6550 press a
+6590 press a
+6630 press a
+6635 release left
+6640 hold right
+6650 press a
+6690 press a
+6730 press a
+6735 release right
+6740 hold left
+6750 press a
+6790 press a
+6830 press a
+6835 release left
+6960 end

@@ -1,0 +1,95 @@
+# Cosmic Casino act 1's star posts, from a console set up and off (--nvram build/setup.nv): the debug menu by the
+# poke at 499C (direction.txt), BEGINNING, act 3-1 picked in the level select (A at 840); for each of the act's star
+# posts (the object layout's object 0D: its number, place and second parameter), the lives poked to 5, the star
+# post's variables (67D4-67DB) as if it had been touched and the player's Y under 64 for 4 frames, the level's pit: a
+# life lost, the player starts again at the star post and runs right with jumps for 400 frames. The star posts: 0 at
+# 2408,1416 (1140), 1 at 2664,640 (1940), 2 at 3520,640 (2740)
+600 poke 499C DB
+650 press a
+700 press down
+730 press down
+760 press down
+790 press down
+840 press a
+1140 poke 67AF 05
+1140 poke 67D4 68
+1140 poke 67D5 09
+1140 poke 67D6 95
+1140 poke 67D7 05
+1140 poke 67DB 00
+1140 poke 67DA 00
+1140 poke 671E 20
+1140 poke 671F 00
+1141 poke 671E 20
+1141 poke 671F 00
+1142 poke 671E 20
+1142 poke 671F 00
+1143 poke 671E 20
+1143 poke 671F 00
+1520 hold right
+1530 press a
+1570 press a
+1610 press a
+1650 press a
+1690 press a
+1730 press a
+1770 press a
+1810 press a
+1850 press a
+1890 press a
+1920 release right
+1940 poke 67AF 05
+1940 poke 67D4 68
+1940 poke 67D5 0A
+1940 poke 67D6 8D
+1940 poke 67D7 02
+1940 poke 67DB 01
+1940 poke 67DA 00
+1940 poke 671E 20
+1940 poke 671F 00
+1941 poke 671E 20
+1941 poke 671F 00
+1942 poke 671E 20
+1942 poke 671F 00
+1943 poke 671E 20
+1943 poke 671F 00
+2320 hold right
+2330 press a
+2370 press a
+2410 press a
+2450 press a
+2490 press a
+2530 press a
+2570 press a
+2610 press a
+2650 press a
+2690 press a
+2720 release right
+2740 poke 67AF 05
+2740 poke 67D4 C0
+2740 poke 67D5 0D
+2740 poke 67D6 8D
+2740 poke 67D7 02
+2740 poke 67DB 02
+2740 poke 67DA 00
+2740 poke 671E 20
+2740 poke 671F 00
+2741 poke 671E 20
+2741 poke 671F 00
+2742 poke 671E 20
+2742 poke 671F 00
+2743 poke 671E 20
+2743 poke 671F 00
+3120 hold right
+3130 press a
+3170 press a
+3210 press a
+3250 press a
+3290 press a
+3330 press a
+3370 press a
+3410 press a
+3450 press a
+3490 press a
+3520 release right
+3540 end

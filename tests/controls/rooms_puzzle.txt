@@ -1,0 +1,52 @@
+# From a console set up and off (--nvram build/setup.nv): the debug menu by the poke at 499C, DEBUG OPTION (770),
+# ALL_CLEAR switched on (970), EXIT (1030); GO TO ROOM (1190), PUZZLE ROOM (1360); PUZZLE INITIALIZE (1550): RESET
+# DATA? answered (1700), with ALL_CLEAR on InitPuzzleMem fills the puzzle memory (6AEA, 60h bytes) with 99, 100, ...
+# as debug pieces; BUILD PUZZLE (1900), the glove moved and A pressed over the board, back with B; VIEW PUZZLE (2850),
+# its pages, back with B
+600 poke 499C DB
+650 press down
+680 press down
+710 press down
+740 press down
+770 press a
+850 press down
+880 press down
+910 press down
+940 press down
+970 press a
+1000 press down
+1030 press a
+1130 press down
+1160 press down
+1190 press a
+1300 press down
+1330 press down
+1360 press a
+1500 press down
+1550 press a
+1650 press left
+1700 press a
+1850 press up
+1900 press a
+2000 press a
+2050 press right
+2100 press a
+2150 press down
+2200 press a
+2250 press left
+2300 press a
+2350 press down
+2400 press a
+2450 press right
+2500 press a
+2600 press b
+2700 press b
+2800 press right
+2850 press a
+2950 press right
+3050 press right
+3150 press left
+3250 press a
+3350 press b
+3450 press b
+3600 end

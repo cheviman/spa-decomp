@@ -1,0 +1,69 @@
+# From a console set up and off (--nvram build/setup.nv): the debug menu by the poke at 499C, GO TO ROOM (710), the
+# ROOM SELECT; TRIAL ROOM (800), its name asked once: A typed and OK (1070); TIME TRIAL, the act select, Neo South
+# Island act 1 and its best times (1200-1500); in the act the player's Y under 64 for 4 frames (1900), the level's
+# pit: TRY AGAIN? CHANGE ACT? QUIT; TRY AGAIN (2300), the pit again (2900), CHANGE ACT (3350), the act select, act 1's
+# times and back with B; ADVANCED (3900), act 1 again, the pit (4700), QUIT (5160); RANKING (5450), its pages, and
+# back with B. Only act 1-1 is open to the trials until an act is cleared
+600 poke 499C DB
+650 press down
+680 press down
+710 press a
+800 press a
+900 press a
+950 press down
+980 press down
+1010 press down
+1040 press right
+1070 press a
+1200 press a
+1300 press a
+1400 press a
+1500 press a
+1900 poke 671E 20
+1900 poke 671F 00
+1901 poke 671E 20
+1901 poke 671F 00
+1902 poke 671E 20
+1902 poke 671F 00
+1903 poke 671E 20
+1903 poke 671F 00
+2300 press a
+2900 poke 671E 20
+2900 poke 671F 00
+2901 poke 671E 20
+2901 poke 671F 00
+2902 poke 671E 20
+2902 poke 671F 00
+2903 poke 671E 20
+2903 poke 671F 00
+3300 press down
+3350 press a
+3550 press a
+3650 press b
+3750 press b
+3900 press right
+3950 press a
+4050 press a
+4150 press a
+4250 press a
+4700 poke 671E 20
+4700 poke 671F 00
+4701 poke 671E 20
+4701 poke 671F 00
+4702 poke 671E 20
+4702 poke 671F 00
+4703 poke 671E 20
+4703 poke 671F 00
+5100 press down
+5130 press down
+5160 press a
+5400 press down
+5450 press a
+5650 press right
+5750 press right
+5850 press left
+5950 press a
+6050 press b
+6150 press b
+6250 press b
+6400 end

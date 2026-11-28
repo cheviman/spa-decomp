@@ -1,0 +1,87 @@
+# From a console set up and off (--nvram build/setup.nv), the debug menu (opened by the poke at 499C, as in
+# direction.txt): DEBUG OPTION (770), each of its five switched on (DEBUG_DISP and ATK_DISP by A, BDY_DISP by right,
+# MUTEKI by left, ALL_CLEAR by A), its page changed three times by Option, EXIT (1300); SOUND TEST (1430): a song
+# played, two more on, another played and stopped by B, sound effects, the bank changed both ways, a song again,
+# Option out (2800); CONTINUE, the level select (2930), and Neo South Island act 1 with the debug display, the boxes
+# and MUTEKI on (from 3000), run right and jumped
+600 poke 499C DB
+650 press down
+680 press down
+710 press down
+740 press down
+770 press a
+850 press a
+880 press down
+910 press a
+940 press down
+970 press right
+1000 press down
+1030 press left
+1060 press down
+1090 press a
+1120 press option
+1150 press option
+1180 press option
+1210 press down
+1240 press up
+1270 press down
+1300 press a
+1400 press up
+1430 press a
+1520 press a
+1700 press right
+1730 press right
+1760 press a
+2000 press b
+2030 press down
+2060 press right
+2090 press a
+2200 press right
+2230 press a
+2300 press down
+2330 press right
+2400 press left
+2450 press up
+2480 press up
+2510 press a
+2800 press option
+2900 press down
+2930 press a
+3000 press a
+3150 hold right
+3160 press a
+3200 press a
+3240 press a
+3280 press a
+3320 press a
+3360 press a
+3400 press a
+3440 press a
+3480 press a
+3520 press a
+3560 press a
+3600 press a
+3640 press a
+3680 press a
+3720 press a
+3760 press a
+3800 press a
+3840 press a
+3880 press a
+3920 press a
+3960 press a
+4000 press a
+4040 press a
+4080 press a
+4120 press a
+4160 press a
+4200 press a
+4240 press a
+4280 press a
+4320 press a
+4360 press a
+4400 press a
+4440 press a
+4480 press a
+4500 release right
+4599 end
